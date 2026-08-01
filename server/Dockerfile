@@ -7,6 +7,8 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /build
 
+ENV MAVEN_OPTS="-Xmx1024m"
+
 COPY server/pom.xml ./pom.xml
 RUN mvn -q -B -DskipTests dependency:go-offline || true
 
