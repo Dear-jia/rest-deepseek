@@ -111,6 +111,61 @@ java -jar target/wenfeng-kitchen-0.1.0.jar
 
 > 注意：只有首次启动（数据库为空）时才会创建管理员，之后再改环境变量不会更新已有密码；如需重置，删除 `server/data/` 下的数据库文件后重启。
 
+## 本地开发指南（自己扩展后端功能）
+
+### 环境与启动
+
+本机已装好 JDK 17（`C:\Program Files\Java\jdk-17`）和 Maven（`%LOCALAPPDATA%\codex-tools\apache-maven-3.9.16`）。
+注意：系统 PATH 里的 `java` 是 8，运行后端请用 JDK 17。
+
+一键启动（推荐）：
+
+```powershell
+.\server\run-dev.ps1
+```
+
+或手动启动：
+
+```powershell
+cd server
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
+mvn spring-boot:run
+```
+
+### 代码结构
+
+```text
+server/src/main/java/com/wenfeng/
+├── WenfengApplication.java     # 启动类
+├── config/                     # 安全配置、CORS、初始数据
+├── dish/                       # 菜品模块（实体 / 仓库 / 服务）
+├── reservation/                # 预订模块（实体 / 仓库）
+├── api/                        # 前台公开接口 /api/**
+└── admin/                      # 后台页面控制器 /admin/**
+server/src/main/resources/
+├── application.yml             # 端口、数据库、账号等配置
+└── templates/admin/            # 后台 Thymeleaf 页面
+```
+
+### 新增一个功能模块（以「评论管理」为例）
+
+1. 建实体：`review/Review.java`（加 `@Entity` 注解和字段）
+2. 建仓库：`review/ReviewRepository.java`（继承 `JpaRepository`）
+3. 建服务：`review/ReviewService.java`（业务逻辑，可选）
+4. 建控制器：后台页 `admin/AdminReviewController.java`；公开接口在 `api/PublicApiController.java` 里加
+5. 建页面：`templates/admin/reviews.html`，并在 `templates/admin/fragments.html` 顶栏加导航
+6. 重启应用本地验证，然后 `git add -A` → `git commit -m "..."` → `git push`，Render 会自动部署
+
+### 常用命令
+
+```powershell
+mvn spring-boot:run              # 本地运行（热更新配置/模板）
+mvn -DskipTests package          # 打包
+java -jar target/wenfeng-kitchen-0.1.0.jar   # 运行打包产物
+```
+
+连接 PostgreSQL 时，启动前设置 `DATABASE_URL` / `DB_DRIVER` / `DB_USERNAME` / `DB_PASSWORD` 四个环境变量即可，其余不用改代码。
+
 ## 页面内容
 
 - 首屏 Hero：餐厅环境大图 + 主标语 + 双按钮
