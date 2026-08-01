@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragments :: head('数据看板')"></head>
+<body>
+<header th:replace="admin/fragments :: topbar('dashboard')"></header>
+<main>
+  <div class="cards">
+    <div class="card"><b th:text="${dishCount}">0</b><span>在售菜品</span></div>
+    <div class="card"><b th:text="${todayCount}">0</b><span>今日预订</span></div>
+    <div class="card"><b th:text="${pendingCount}">0</b><span>待确认</span></div>
+    <div class="card"><b th:text="${totalCount}">0</b><span>累计预订</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>最新预订</h2>
+      <a class="btn btn-ghost" href="/admin/reservations">查看全部</a>
+    </div>
+    <table>
+      <tr><th>编号</th><th>姓名</th><th>电话</th><th>日期</th><th>时间</th><th>人数</th><th>状态</th></tr>
+      <tr th:each="r : ${recent}">
+        <td th:text="'#' + ${r.id}">#1</td>
+        <td th:text="${r.name}">-</td>
+        <td th:text="${r.phone}">-</td>
+        <td th:text="${r.date}">-</td>
+        <td th:text="${r.time}">-</td>
+        <td th:text="${r.guests} + ' 人'">-</td>
+        <td>
+          <th:block th:switch="${r.status}">
+            <span class="badge badge-pending" th:case="PENDING">待确认</span>
+            <span class="badge badge-confirmed" th:case="CONFIRMED">已确认</span>
+            <span class="badge badge-cancelled" th:case="CANCELLED">已取消</span>
+          </th:block>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(recent)}">
+        <td colspan="7" class="muted">暂无预订，前台提交的预订会显示在这里。</td>
+      </tr>
+    </table>
+  </div>
+</main>
+</body>
+</html>

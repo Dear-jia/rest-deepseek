@@ -1,0 +1,15 @@
+services:
+  wenfeng-kitchen:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: wenfeng-kitchen
+    ports:
+      - "8080:8080"
+    environment:
+      - PUBLIC_DIR=/app/public
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=admin123
+    volumes:
+      - ./server/data:/app/data
+    restart: unless-stopped

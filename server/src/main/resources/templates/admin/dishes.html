@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragments :: head('菜品管理')"></head>
+<body>
+<header th:replace="admin/fragments :: topbar('dishes')"></header>
+<main>
+  <div class="flash" th:if="${flash}" th:text="${flash}">提示</div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>菜品列表</h2>
+      <a class="btn btn-primary" href="/admin/dishes/new">＋ 新增菜品</a>
+    </div>
+    <table>
+      <tr>
+        <th>排序</th><th>图片</th><th>名称</th><th>分类</th><th>价格</th><th>标签</th><th>招牌</th><th>状态</th><th>操作</th>
+      </tr>
+      <tr th:each="d : ${dishes}">
+        <td th:text="${d.sortOrder}">0</td>
+        <td>
+          <img class="thumb" th:if="${d.image != null}" th:src="${d.image}" alt="">
+          <span th:if="${d.image == null}" class="muted">无图</span>
+        </td>
+        <td>
+          <strong th:text="${d.name}">菜名</strong>
+          <div class="muted" th:text="${d.nameEn}">EN</div>
+        </td>
+        <td>
+          <th:block th:switch="${d.category}">
+            <span class="badge badge-hot" th:case="HOT">热菜</span>
+            <span class="badge badge-main" th:case="MAIN">主食汤品</span>
+            <span class="badge badge-drink" th:case="DRINK">甜品饮品</span>
+          </th:block>
+        </td>
+        <td th:text="'¥' + ${d.price}">¥0</td>
+        <td th:text="${d.tag ?: '-'}">-</td>
+        <td th:text="${d.recommended} ? '★' : ''">-</td>
+        <td>
+          <span class="badge" th:classappend="${d.enabled} ? 'badge-confirmed' : 'badge-cancelled'"
+                th:text="${d.enabled} ? '上架' : '下架'">-</span>
+        </td>
+        <td>
+          <a class="btn btn-ghost btn-sm" th:href="@{/admin/dishes/{id}/edit(id=${d.id})}">编辑</a>
+          <form class="inline" method="post" th:action="@{/admin/dishes/{id}/delete(id=${d.id})}"
+                onsubmit="return confirm('确定删除「' + '${d.name}' + '」吗？');">
+            <button class="btn btn-danger btn-sm" type="submit">删除</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(dishes)}">
+        <td colspan="9" class="muted">暂无菜品，点击右上角「新增菜品」添加。</td>
+      </tr>
+    </table>
+  </div>
+</main>
+</body>
+</html>

@@ -1,8 +1,8 @@
-# 山云小馆 · 餐厅主页
+# 文峰小馆 · 餐厅官网 + 后台管理系统
 
-一个纯前端的中式家常餐厅主页，无构建工具、无外部运行时依赖，图片全部存放在本地，双击即可打开。
+一个中式家常餐厅的完整网站：前台官网（纯静态，可发布到 GitHub Pages）+ 后台管理系统（Spring Boot 3 + Java 17）。
 
-## 快速开始
+## 前台官网（静态版）
 
 直接用浏览器打开 `index.html`，或起一个静态服务（推荐，避免个别浏览器对本地文件的限制）：
 
@@ -12,17 +12,82 @@ python -m http.server 8080
 
 然后访问 http://localhost:8080
 
+前台菜单由后端接口 `/api/dishes` 动态加载；接口不可用时自动回退到内置菜单，因此静态版页面始终可用。预订表单同理：后端可用时提交到服务器，否则显示演示提示。
+
 ## 目录结构
 
 ```text
 project-rest/
-├── index.html        # 页面结构（导航/Hero/关于/招牌菜/菜单/环境/评价/预订/页脚）
-├── css/style.css     # 主题样式与响应式布局
-├── js/main.js        # 交互（滚动导航、菜单切换、表单校验、动画）
-├── assets/img/       # 本地图片素材（菜品与餐厅环境）
+├── index.html            # 前台页面结构
+├── css/style.css         # 前台主题样式与响应式布局
+├── js/main.js            # 前台交互 + 菜单/预订对接后端接口
+├── assets/img/           # 前台图片素材
+├── server/               # Java 后端（Spring Boot）
+│   ├── pom.xml
+│   ├── Dockerfile
+│   └── src/main/
+│       ├── java/com/wenfeng/   # 实体、控制器、安全配置、初始化数据
+│       └── resources/
+│           ├── application.yml # 端口、数据库、后台账号等配置
+│           └── templates/admin/ # 后台 Thymeleaf 页面
+├── docker-compose.yml    # 一键 Docker 部署
 ├── README.md
 └── CREDITS.md        # 图片来源与授权说明
 ```
+
+## 后台管理系统
+
+后台地址：`http://localhost:8080/admin`
+
+默认账号：`admin` / `admin123`（首次部署后请务必修改，见下方「修改管理员密码」）
+
+功能：
+
+- 数据看板：菜品数、今日预订、待确认数、累计预订、最新预订
+- 菜品管理：新增 / 编辑 / 删除菜品，设置分类、价格、标签、招牌推荐、上下架、排序
+- 预订管理：查看前台提交的预订，一键确认 / 取消 / 删除
+
+### 本地运行后端
+
+需要 JDK 17 与 Maven：
+
+```powershell
+cd server
+mvn spring-boot:run
+```
+
+或打包后运行：
+
+```powershell
+mvn -DskipTests package
+java -jar target/wenfeng-kitchen-0.1.0.jar
+```
+
+启动后：
+
+- 前台：http://localhost:8080/
+- 后台：http://localhost:8080/admin
+- 数据库（H2 文件模式）：`server/data/wenfeng.mv.db`，首次启动自动建表并写入默认菜品
+- H2 控制台：http://localhost:8080/h2-console（JDBC URL：`jdbc:h2:file:./data/wenfeng`，用户 `sa`）
+
+### 后端接口
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/api/dishes` | 前台菜品列表（仅上架菜品） |
+| POST | `/api/reservations` | 提交预订（JSON：name/phone/date/time/guests/room/note） |
+
+### 修改管理员密码
+
+通过环境变量配置（生产环境推荐），例如：
+
+```powershell
+$env:ADMIN_USER="admin"
+$env:ADMIN_PASSWORD="你的强密码"
+java -jar target/wenfeng-kitchen-0.1.0.jar
+```
+
+> 注意：只有首次启动（数据库为空）时才会创建管理员，之后再改环境变量不会更新已有密码；如需重置，删除 `server/data/` 下的数据库文件后重启。
 
 ## 页面内容
 
@@ -79,7 +144,7 @@ project-rest/
 
 ## 部署上线
 
-### 方案一：GitHub Pages（推荐，免费）
+### 方案一：GitHub Pages（免费，前台静态版）
 
 仓库已内置自动部署工作流，推送到 `main` 分支后会自动发布。
 
@@ -94,9 +159,9 @@ project-rest/
 3. 打开仓库 Settings → Pages，将 Source 选为 **GitHub Actions**。
 4. 等待工作流跑完，访问 `https://<你的用户名>.github.io/<仓库名>/`。
 
-> 项目内所有资源均使用相对路径，放在任何子路径下都能正常显示。
+> 项目内所有资源均使用相对路径，放在任何子路径下都能正常显示。GitHub Pages 只能托管前台静态页面，后台管理需要运行 Java 服务（见方案三）。
 
-### 方案二：Vercel（最快，无需建仓库）
+### 方案二：Vercel（前台静态版）
 
 1. 在项目目录运行：
 
@@ -106,6 +171,18 @@ project-rest/
 
 2. 按提示用浏览器登录（首次会创建 Vercel 账号），Framework Preset 选 **Other**。
 3. 发布后得到 `https://<项目名>.vercel.app` 地址，之后每次 `npx vercel --prod` 更新。
+
+### 方案三：Docker 部署（完整版，含后台）
+
+服务器安装 Docker 后，在项目根目录执行：
+
+```bash
+docker compose up -d --build
+```
+
+然后访问 `http://服务器IP:8080/`（前台）与 `http://服务器IP:8080/admin`（后台）。预订数据保存在 `server/data/` 卷中，重启不丢失。
+
+如需换端口，修改 `docker-compose.yml` 中的 `ports` 映射即可。
 
 ### 自定义域名
 

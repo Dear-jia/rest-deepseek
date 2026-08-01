@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragments :: head('预订管理')"></head>
+<body>
+<header th:replace="admin/fragments :: topbar('reservations')"></header>
+<main>
+  <div class="flash" th:if="${flash}" th:text="${flash}">提示</div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>预订列表</h2>
+      <span class="muted">共 <b th:text="${#lists.size(reservations)}">0</b> 条</span>
+    </div>
+    <table>
+      <tr>
+        <th>编号</th><th>姓名</th><th>电话</th><th>日期</th><th>时间</th><th>人数</th><th>包间</th><th>备注</th><th>状态</th><th>操作</th>
+      </tr>
+      <tr th:each="r : ${reservations}">
+        <td th:text="'#' + ${r.id}">#1</td>
+        <td th:text="${r.name}">-</td>
+        <td th:text="${r.phone}">-</td>
+        <td th:text="${r.date}">-</td>
+        <td th:text="${r.time}">-</td>
+        <td th:text="${r.guests} + ' 人'">-</td>
+        <td th:text="${r.room}">大厅</td>
+        <td th:text="${r.note ?: '-'}">-</td>
+        <td>
+          <th:block th:switch="${r.status}">
+            <span class="badge badge-pending" th:case="PENDING">待确认</span>
+            <span class="badge badge-confirmed" th:case="CONFIRMED">已确认</span>
+            <span class="badge badge-cancelled" th:case="CANCELLED">已取消</span>
+          </th:block>
+        </td>
+        <td>
+          <form class="inline" method="post" th:if="${r.status.name() == 'PENDING'}"
+                th:action="@{/admin/reservations/{id}/confirm(id=${r.id})}">
+            <button class="btn btn-success btn-sm" type="submit">确认</button>
+          </form>
+          <form class="inline" method="post" th:if="${r.status.name() == 'PENDING'}"
+                th:action="@{/admin/reservations/{id}/cancel(id=${r.id})}">
+            <button class="btn btn-ghost btn-sm" type="submit">取消</button>
+          </form>
+          <form class="inline" method="post" th:action="@{/admin/reservations/{id}/delete(id=${r.id})}"
+                onsubmit="return confirm('确定删除预订 #' + ${r.id} + ' 吗？');">
+            <button class="btn btn-danger btn-sm" type="submit">删除</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(reservations)}">
+        <td colspan="10" class="muted">暂无预订。</td>
+      </tr>
+    </table>
+  </div>
+</main>
+</body>
+</html>
