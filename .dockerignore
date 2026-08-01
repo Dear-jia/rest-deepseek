@@ -1,0 +1,9 @@
+.git
+.github
+.preview
+server/data
+server/target
+docker-compose.yml
+render.yaml
+README.md
+CREDITS.md

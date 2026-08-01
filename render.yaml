@@ -1,0 +1,20 @@
+# Render 蓝图：在 Render 后台点击 New + → Blueprint 选择本仓库即可一键部署
+services:
+  - type: web
+    name: wenfeng-kitchen
+    runtime: docker
+    repo: https://github.com/Dear-jia/rest-deepseek
+    branch: main
+    plan: free
+    region: singapore
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: PUBLIC_DIR
+        value: /app/public
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASSWORD
+        value: admin123

@@ -172,7 +172,22 @@ java -jar target/wenfeng-kitchen-0.1.0.jar
 2. 按提示用浏览器登录（首次会创建 Vercel 账号），Framework Preset 选 **Other**。
 3. 发布后得到 `https://<项目名>.vercel.app` 地址，之后每次 `npx vercel --prod` 更新。
 
-### 方案三：Docker 部署（完整版，含后台）
+### 方案三：Render 免费部署（完整版，含后台）
+
+1. 注册 Render 账号：https://render.com （建议直接用 GitHub 账号登录）
+2. 登录后点击 **New +** → **Blueprint**
+3. 选择仓库 `Dear-jia/rest-deepseek`，Render 会读取仓库里的 `render.yaml` 自动创建服务
+4. 等待构建完成（首次约 10–20 分钟，含 Maven 编译），完成后访问
+   `https://wenfeng-kitchen.onrender.com/`（前台）与 `https://wenfeng-kitchen.onrender.com/admin`（后台）
+
+注意事项：
+
+- 免费实例在 15 分钟无访问后会休眠，再次访问需等待约 30–60 秒唤醒
+- 免费实例使用临时磁盘，重启/重新部署后数据库（H2 文件）会清空。如需数据持久化，可在 Render 上另建免费的 PostgreSQL 数据库，我再把项目接上
+- 首次部署后请到 Render Dashboard 的 Environment 中修改 `ADMIN_PASSWORD`（当前默认 `admin123` 已写入配置，公开在仓库里，务必更换）
+- 之后每次 `git push`，Render 会自动重新构建部署
+
+### 方案四：自有服务器 Docker 部署（完整版，含后台）
 
 服务器安装 Docker 后，在项目根目录执行：
 
