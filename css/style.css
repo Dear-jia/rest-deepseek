@@ -309,6 +309,20 @@ button {
   font-size: 14px;
 }
 
+.header-login {
+  font-size: 14px;
+  letter-spacing: .08em;
+  opacity: .88;
+  padding: 8px 4px;
+  border-bottom: 1px solid transparent;
+  transition: opacity .25s ease, border-bottom-color .25s ease;
+}
+
+.header-login:hover {
+  opacity: 1;
+  border-bottom-color: currentColor;
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -1176,6 +1190,10 @@ button {
   }
 
   .header-cta {
+    display: none;
+  }
+
+  .header-login {
     display: none;
   }
 

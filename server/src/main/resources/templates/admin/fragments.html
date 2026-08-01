@@ -23,6 +23,9 @@
     .panel { background: #fff; border-radius: 12px; padding: 20px 22px; box-shadow: 0 6px 16px rgba(36,28,20,.07); margin-bottom: 20px; }
     .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .panel h2 { font-size: 18px; }
+    .filter-tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .filter-tabs a { padding: 6px 16px; border-radius: 999px; background: #f3ecdd; color: #5b4a34; text-decoration: none; font-size: 13px; }
+    .filter-tabs a.on { background: #b5431f; color: #fff; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #efe6d6; vertical-align: middle; }
     th { color: #8a7b66; font-weight: 600; font-size: 12px; letter-spacing: .06em; }
@@ -69,6 +72,7 @@
     <a th:classappend="${active == 'dashboard'} ? 'on' : ''" href="/admin">数据看板</a>
     <a th:classappend="${active == 'dishes'} ? 'on' : ''" href="/admin/dishes">菜品管理</a>
     <a th:classappend="${active == 'reservations'} ? 'on' : ''" href="/admin/reservations">预订管理</a>
+    <a th:classappend="${active == 'account'} ? 'on' : ''" href="/admin/account">修改密码</a>
     <form class="inline" method="post" th:action="@{/admin/logout}">
       <button type="submit">退出登录</button>
     </form>

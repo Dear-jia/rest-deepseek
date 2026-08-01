@@ -84,6 +84,15 @@ public class AdminDishController {
         return "redirect:/admin/dishes";
     }
 
+    @PostMapping("/{id}/toggle")
+    public String toggle(@PathVariable Long id, RedirectAttributes redirect) {
+        Dish dish = dishService.get(id);
+        dish.setEnabled(!dish.isEnabled());
+        dishService.save(dish);
+        redirect.addFlashAttribute("flash", "菜品「" + dish.getName() + "」已" + (dish.isEnabled() ? "上架" : "下架"));
+        return "redirect:/admin/dishes";
+    }
+
     private void fill(Dish dish, String name, String nameEn, String description, BigDecimal price,
             String image, String category, String tag, boolean recommended, int sortOrder) {
         dish.setName(name.trim());

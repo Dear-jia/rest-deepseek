@@ -45,7 +45,29 @@ project-rest/
 
 - 数据看板：菜品数、今日预订、待确认数、累计预订、最新预订
 - 菜品管理：新增 / 编辑 / 删除菜品，设置分类、价格、标签、招牌推荐、上下架、排序
-- 预订管理：查看前台提交的预订，一键确认 / 取消 / 删除
+- 预订管理：查看前台提交的预订，按状态筛选（全部/待确认/已确认/已取消），一键确认 / 取消 / 删除
+- 修改密码：后台右上角「修改密码」可随时更换管理员密码
+
+### 长期存储数据（PostgreSQL）
+
+默认使用本地 H2 文件数据库；需要数据长期保存（例如 Render 免费实例的临时磁盘会丢数据）时，接入 PostgreSQL：
+
+1. 注册一个免费 PostgreSQL（任选其一）：
+   - [Neon](https://neon.tech)（免费 0.5GB，无到期时间，推荐）
+   - [Supabase](https://supabase.com)（免费 500MB）
+   - Render 自带的 PostgreSQL（付费版持久，免费版有限制）
+2. 创建数据库后，把连接信息配置为环境变量（Render 的 Environment 或本地启动前设置）：
+
+   ```powershell
+   $env:DATABASE_URL  = "jdbc:postgresql://主机:端口/数据库名"
+   $env:DB_DRIVER     = "org.postgresql.Driver"
+   $env:DB_USERNAME   = "用户名"
+   $env:DB_PASSWORD   = "密码"
+   ```
+
+3. 重启应用，首次启动会自动建表并写入默认菜品。
+
+> 注意：从 H2 切换到 PostgreSQL 相当于全新开始（旧数据不会自动迁移）；之后数据写入 PostgreSQL，重新部署、重启都不丢失。
 
 ### 本地运行后端
 
@@ -183,8 +205,8 @@ java -jar target/wenfeng-kitchen-0.1.0.jar
 注意事项：
 
 - 免费实例在 15 分钟无访问后会休眠，再次访问需等待约 30–60 秒唤醒
-- 免费实例使用临时磁盘，重启/重新部署后数据库（H2 文件）会清空。如需数据持久化，可在 Render 上另建免费的 PostgreSQL 数据库，我再把项目接上
-- 首次部署后请到 Render Dashboard 的 Environment 中修改 `ADMIN_PASSWORD`（当前默认 `admin123` 已写入配置，公开在仓库里，务必更换）
+- 免费实例使用临时磁盘，重启/重新部署后 H2 数据会清空；请按上面「长期存储数据」接入 PostgreSQL
+- 首次部署后请到 Render Dashboard 的 Environment 中修改 `ADMIN_PASSWORD`，或登录后台后使用「修改密码」页面更换
 - 之后每次 `git push`，Render 会自动重新构建部署
 
 ### 方案四：自有服务器 Docker 部署（完整版，含后台）

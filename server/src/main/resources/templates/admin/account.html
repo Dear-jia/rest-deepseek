@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragments :: head('修改密码')"></head>
+<body>
+<header th:replace="admin/fragments :: topbar('account')"></header>
+<main>
+  <div class="flash" th:if="${flash}" th:text="${flash}">提示</div>
+  <div class="panel" style="max-width: 460px;">
+    <div class="panel-head">
+      <h2>修改管理员密码</h2>
+      <a class="btn btn-ghost" href="/admin">返回看板</a>
+    </div>
+    <p class="err" style="color:#a13022;margin-bottom:12px;" th:if="${error}" th:text="${error}">错误</p>
+    <form th:action="@{/admin/account}" method="post" style="display:grid;gap:16px;">
+      <div class="field">
+        <label>当前密码 *</label>
+        <input type="password" name="oldPassword" required autocomplete="current-password">
+      </div>
+      <div class="field">
+        <label>新密码（至少 6 位）*</label>
+        <input type="password" name="newPassword" required minlength="6" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label>确认新密码 *</label>
+        <input type="password" name="confirmPassword" required minlength="6" autocomplete="new-password">
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" type="submit">保存新密码</button>
+      </div>
+    </form>
+  </div>
+</main>
+</body>
+</html>

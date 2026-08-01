@@ -10,9 +10,15 @@
       <h2>预订列表</h2>
       <span class="muted">共 <b th:text="${#lists.size(reservations)}">0</b> 条</span>
     </div>
+    <div class="filter-tabs">
+      <a th:classappend="${currentStatus == null} ? 'on' : ''" th:href="@{/admin/reservations}">全部</a>
+      <a th:classappend="${currentStatus?.name() == 'PENDING'} ? 'on' : ''" th:href="@{/admin/reservations(status='PENDING')}">待确认</a>
+      <a th:classappend="${currentStatus?.name() == 'CONFIRMED'} ? 'on' : ''" th:href="@{/admin/reservations(status='CONFIRMED')}">已确认</a>
+      <a th:classappend="${currentStatus?.name() == 'CANCELLED'} ? 'on' : ''" th:href="@{/admin/reservations(status='CANCELLED')}">已取消</a>
+    </div>
     <table>
       <tr>
-        <th>编号</th><th>姓名</th><th>电话</th><th>日期</th><th>时间</th><th>人数</th><th>包间</th><th>备注</th><th>状态</th><th>操作</th>
+        <th>编号</th><th>姓名</th><th>电话</th><th>日期</th><th>时间</th><th>人数</th><th>包间</th><th>备注</th><th>提交时间</th><th>状态</th><th>操作</th>
       </tr>
       <tr th:each="r : ${reservations}">
         <td th:text="'#' + ${r.id}">#1</td>
@@ -23,6 +29,7 @@
         <td th:text="${r.guests} + ' 人'">-</td>
         <td th:text="${r.room}">大厅</td>
         <td th:text="${r.note ?: '-'}">-</td>
+        <td th:text="${#temporals.format(r.createdAt, 'MM-dd HH:mm')}">-</td>
         <td>
           <th:block th:switch="${r.status}">
             <span class="badge badge-pending" th:case="PENDING">待确认</span>
@@ -46,7 +53,7 @@
         </td>
       </tr>
       <tr th:if="${#lists.isEmpty(reservations)}">
-        <td colspan="10" class="muted">暂无预订。</td>
+        <td colspan="11" class="muted">暂无预订。</td>
       </tr>
     </table>
   </div>
