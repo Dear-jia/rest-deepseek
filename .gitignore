@@ -1,0 +1,10 @@
+# 预览截图与本地临时文件
+.preview/
+
+# 系统文件
+Thumbs.db
+.DS_Store
+
+# 编辑器
+.vscode/
+.idea/
