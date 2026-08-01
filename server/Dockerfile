@@ -24,4 +24,5 @@ COPY index.html css js assets /app/public/
 ENV PUBLIC_DIR=/app/public
 
 EXPOSE 8080
-CMD ["sh", "-c", "java -XX:MaxRAMPercentage=60 -jar /app/app.jar"]
+# 免费实例内存为 512MB，JVM 堆上限设为 30%，避免 OOM 被杀
+CMD ["sh", "-c", "java -XX:MaxRAMPercentage=30 -jar /app/app.jar"]
