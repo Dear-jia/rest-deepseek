@@ -19,7 +19,11 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 COPY --from=build /build/target/wenfeng-kitchen-0.1.0.jar /app/app.jar
-COPY index.html css js assets /app/public/
+# 注意：多源 COPY 会把目录内容平铺，必须逐个按原名拷贝，保持 css/js/assets 目录结构
+COPY index.html /app/public/index.html
+COPY css /app/public/css
+COPY js /app/public/js
+COPY assets /app/public/assets
 
 ENV PUBLIC_DIR=/app/public
 
