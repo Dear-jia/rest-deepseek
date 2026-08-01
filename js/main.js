@@ -236,15 +236,21 @@
     const time = form.time;
     const guests = form.guests;
 
-    let ok = true;
-    ok = markInvalid(name, name.value.trim() === "") && ok;
-    ok = markInvalid(phone, !/^1[3-9]\d{9}$/.test(phone.value.trim())) && ok;
-    ok = markInvalid(date, date.value === "") && ok;
-    ok = markInvalid(time, time.value === "") && ok;
-    ok = markInvalid(guests, guests.value === "") && ok;
-
-    if (!ok) {
-      showToast("请检查并完善预订信息（手机号需为 11 位）");
+    const checks = [
+      { el: name, bad: name.value.trim() === "", msg: "请填写您的姓名" },
+      { el: phone, bad: !/^1[3-9]\d{9}$/.test(phone.value.trim()), msg: "手机号格式不正确（需 11 位数字）" },
+      { el: date, bad: date.value === "", msg: "请选择用餐日期" },
+      { el: time, bad: time.value === "", msg: "请选择用餐时间" },
+      { el: guests, bad: guests.value === "", msg: "请选择用餐人数" }
+    ];
+    let firstError = null;
+    checks.forEach(function (c) {
+      c.el.classList.toggle("invalid", c.bad);
+      if (c.bad && !firstError) firstError = c;
+    });
+    if (firstError) {
+      showToast(firstError.msg);
+      firstError.el.focus();
       return;
     }
 
