@@ -1164,6 +1164,14 @@ button {
 
 /* ---------- 响应式 ---------- */
 
+/* 用户中心/管理登录：只出现在手机端汉堡菜单；电脑端由顶部链接承担 */
+@media (min-width: 861px) {
+  .nav-user-item,
+  .nav-login-item {
+    display: none !important;
+  }
+}
+
 @media (max-width: 1024px) {
   .dish-grid {
     grid-template-columns: repeat(2, 1fr);
