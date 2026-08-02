@@ -2,35 +2,91 @@ package com.wenfeng.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
+    private static final String CSP =
+            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+            + "img-src 'self' data:; connect-src 'self'; font-src 'self'; form-action 'self'; "
+            + "frame-ancestors 'self'; base-uri 'self'";
+
+    /** 管理员端 */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
         http
+            .securityMatcher("/admin/**")
             .authorizeHttpRequests(auth -> auth
-                // 前台页面与公开接口
-                .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/assets/**",
-                        "/favicon.ico", "/h2-console/**", "/api/**").permitAll()
                 .requestMatchers("/admin/login").permitAll()
-                // 后台其余页面需要管理员角色
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().permitAll())
+                .anyRequest().hasRole("ADMIN"))
             .formLogin(form -> form
                 .loginPage("/admin/login")
-                .defaultSuccessUrl("/admin", true)
-                .failureUrl("/admin/login?error"))
+                .failureHandler(failureHandler)
+                .successHandler((request, response, authentication) ->
+                        response.sendRedirect(request.getContextPath() + "/admin")))
             .logout(logout -> logout
                 .logoutUrl("/admin/logout")
                 .logoutSuccessUrl("/admin/login?logout"))
-            // 公开 API 与 H2 控制台不使用 CSRF（API 无 Cookie 会话）
+            .addFilterBefore(mustChangePasswordFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(loginLockFilter, UsernamePasswordAuthenticationFilter.class)
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
+                .contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
+                .referrerPolicy(referrer -> referrer
+                        .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
+        return http.build();
+    }
+
+    /** 用户端 */
+    @Bean
+    @Order(2)
+    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/user/**")
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/user/login", "/user/register").permitAll()
+                .anyRequest().hasRole("USER"))
+            .formLogin(form -> form
+                .loginPage("/user/login")
+                .failureHandler(failureHandler)
+                .successHandler((request, response, authentication) ->
+                        response.sendRedirect(request.getContextPath() + "/user")))
+            .logout(logout -> logout
+                .logoutUrl("/user/logout")
+                .logoutSuccessUrl("/user/login?logout"))
+            .addFilterBefore(loginLockFilter, UsernamePasswordAuthenticationFilter.class)
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
+                .contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
+                .referrerPolicy(referrer -> referrer
+                        .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
+        return http.build();
+    }
+
+    /** 公开部分：前台页面、静态资源、公开 API */
+    @Bean
+    @Order(3)
+    public SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/h2-console/**").permitAll()
+                .anyRequest().permitAll())
             .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**"))
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
+                .contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
+                .referrerPolicy(referrer -> referrer
+                        .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
         return http.build();
     }
 
@@ -38,4 +94,17 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    private final RateLimitedAuthenticationFailureHandler failureHandler;
+    private final MustChangePasswordFilter mustChangePasswordFilter;
+    private final LoginLockFilter loginLockFilter;
+
+    public SecurityConfig(RateLimitedAuthenticationFailureHandler failureHandler,
+            MustChangePasswordFilter mustChangePasswordFilter, LoginLockFilter loginLockFilter) {
+        this.failureHandler = failureHandler;
+        this.mustChangePasswordFilter = mustChangePasswordFilter;
+        this.loginLockFilter = loginLockFilter;
+    }
+
+    // 两处链注册锁定过滤器（在认证前拦截）
 }

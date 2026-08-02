@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragments :: head('用户中心')"></head>
+<body>
+<header th:replace="user/fragments :: userTopbar"></header>
+<main>
+  <div class="flash" th:if="${flash}" th:text="${flash}">提示</div>
+  <p class="err" style="background:#fbe9e6;border:1px solid #f2c4bc;color:#a13022;padding:12px 16px;border-radius:10px;margin-bottom:18px;"
+     th:if="${error}" th:text="${error}">错误</p>
+
+  <div class="cards">
+    <div class="card"><b th:text="'¥' + ${customer.balance}">¥0</b><span>当前余额</span></div>
+    <div class="card"><b th:text="${drawsLeft}">0</b><span>今日剩余抽奖</span></div>
+    <div class="card"><b th:text="${#lists.size(coupons)}">0</b><span>我的优惠券</span></div>
+    <div class="card"><b th:text="${#lists.size(myReviews)}">0</b><span>我的评价</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>余额充值</h2></div>
+    <p class="muted" style="margin-bottom:14px;">演示版为模拟充值（提交即到账，无真实支付），后续可接入微信/支付宝支付。</p>
+    <form th:action="@{/user/recharge}" method="post" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <input type="number" name="amount" min="0.01" max="10000" step="0.01" required
+             placeholder="充值金额（元）" style="padding:10px 12px;border:1px solid #ddd2bd;border-radius:8px;font-size:14px;width:220px;">
+      <button class="btn btn-primary" type="submit">立即充值</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>幸运抽奖</h2></div>
+    <p class="muted" style="margin-bottom:14px;">每天 3 次免费机会，可抽中 ¥5 / ¥10 无门槛券或满减券。</p>
+    <form th:action="@{/user/draw}" method="post">
+      <button class="btn btn-primary" type="submit"
+              th:disabled="${drawsLeft <= 0}">立即抽奖（今日剩余 <span th:text="${drawsLeft}">0</span> 次）</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>我的优惠券</h2></div>
+    <table>
+      <tr><th>券名</th><th>面额</th><th>满减门槛</th><th>有效期至</th><th>状态</th></tr>
+      <tr th:each="c : ${coupons}">
+        <td th:text="${c.title}">-</td>
+        <td th:text="'¥' + ${c.value}">-</td>
+        <td th:text="${c.minSpend > 0} ? ('满 ¥' + ${c.minSpend} + ' 可用') : '无门槛'">-</td>
+        <td th:text="${c.validUntil}">-</td>
+        <td>
+          <span class="badge" th:classappend="${c.status == 'UNUSED'} ? 'badge-confirmed' : 'badge-cancelled'"
+                th:text="${c.status == 'UNUSED'} ? '未使用' : '已使用/过期'">-</span>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(coupons)}"><td colspan="5" class="muted">暂无优惠券，去抽奖试试手气吧！</td></tr>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>发表评价</h2></div>
+    <form th:action="@{/user/review}" method="post" style="display:grid;gap:14px;">
+      <div class="field">
+        <label>评分</label>
+        <select name="rating" required>
+          <option value="5">★★★★★ 非常满意</option>
+          <option value="4">★★★★ 满意</option>
+          <option value="3">★★★ 一般</option>
+          <option value="2">★★ 不太满意</option>
+          <option value="1">★ 不满意</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>评价内容（至少 5 个字）</label>
+        <textarea name="content" rows="3" required placeholder="说说你对文峰小馆的印象吧…"></textarea>
+      </div>
+      <div class="actions"><button class="btn btn-primary" type="submit">提交评价</button></div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>我的评价</h2></div>
+    <table>
+      <tr><th>评分</th><th>内容</th><th>提交时间</th><th>状态</th></tr>
+      <tr th:each="r : ${myReviews}">
+        <td>
+          <span th:each="i : ${#numbers.sequence(1, r.rating)}">★</span>
+          <span th:each="i : ${#numbers.sequence(1, 5 - r.rating)}" style="color:#cfc2a8;">☆</span>
+        </td>
+        <td th:text="${r.content}">-</td>
+        <td th:text="${#temporals.format(r.createdAt, 'MM-dd HH:mm')}">-</td>
+        <td>
+          <th:block th:switch="${r.status}">
+            <span class="badge badge-pending" th:case="PENDING">审核中</span>
+            <span class="badge badge-confirmed" th:case="APPROVED">已展示</span>
+            <span class="badge badge-cancelled" th:case="REJECTED">未通过</span>
+          </th:block>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(myReviews)}"><td colspan="4" class="muted">还没有发表过评价。</td></tr>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>余额明细</h2></div>
+    <table>
+      <tr><th>金额</th><th>类型</th><th>说明</th><th>时间</th></tr>
+      <tr th:each="t : ${transactions}">
+        <td th:style="${t.amount >= 0} ? 'color:#2f6b2f;font-weight:600;' : 'color:#a13022;'"
+            th:text="${t.amount >= 0} ? ('+' + ${t.amount}) : ${t.amount}">-</td>
+        <td>
+          <span class="badge badge-main" th:if="${t.type == 'RECHARGE'}">充值</span>
+          <span class="badge badge-pending" th:if="${t.type == 'ADMIN_ADJUST'}">管理员调整</span>
+        </td>
+        <td th:text="${t.note}">-</td>
+        <td th:text="${#temporals.format(t.createdAt, 'MM-dd HH:mm')}">-</td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(transactions)}"><td colspan="4" class="muted">暂无余额变动记录。</td></tr>
+    </table>
+  </div>
+</main>
+</body>
+</html>

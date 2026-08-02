@@ -106,7 +106,14 @@
         if (adminLink) adminLink.hidden = false;
         const headerLogin = document.getElementById("header-login");
         if (headerLogin) headerLogin.hidden = false;
+        const headerUser = document.getElementById("header-user-link");
+        if (headerUser) headerUser.hidden = false;
+        const footerUser = document.getElementById("footer-user-link");
+        if (footerUser) footerUser.hidden = false;
         document.querySelectorAll(".nav-login-item").forEach(function (item) {
+          item.hidden = false;
+        });
+        document.querySelectorAll(".nav-user-item").forEach(function (item) {
           item.hidden = false;
         });
       }
@@ -115,6 +122,33 @@
     }
     renderSignature(dishes);
     renderMenu(dishes);
+  }
+
+  /* ---------- 首页顾客评价（来自后端审核通过的评论，接口不可用时保留内置） ---------- */
+  async function hydrateReviews() {
+    try {
+      const res = await fetch("/api/reviews", { headers: { Accept: "application/json" } });
+      if (!res.ok) throw new Error("api unavailable");
+      const data = await res.json();
+      const grid = document.getElementById("review-grid");
+      if (!grid || !Array.isArray(data) || data.length === 0) return;
+      grid.innerHTML = data.map(function (r) {
+        const rate = Math.max(1, Math.min(5, r.rating));
+        const stars = "★".repeat(rate) + "☆".repeat(5 - rate);
+        return (
+          '<blockquote class="review-card reveal in">' +
+            '<div class="stars" aria-label="' + rate + ' 星好评">' + stars + "</div>" +
+            '<p class="review-text">' + esc(r.content) + "</p>" +
+            '<footer class="review-author">' +
+              '<span class="avatar" aria-hidden="true">' + esc((r.nickname || "客").charAt(0)) + "</span>" +
+              "<div><strong>" + esc(r.nickname || "顾客") + "</strong><span>" + esc(r.createdAt || "") + " · 用户评价</span></div>" +
+            "</footer>" +
+          "</blockquote>"
+        );
+      }).join("");
+    } catch (e) {
+      // 保留内置评价
+    }
   }
 
   /* ---------- 顶部导航：滚动后切换样式 ---------- */
@@ -312,4 +346,5 @@
 
   /* ---------- 加载菜单 ---------- */
   hydrateMenu();
+  hydrateReviews();
 })();

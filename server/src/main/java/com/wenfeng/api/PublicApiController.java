@@ -4,6 +4,8 @@ import com.wenfeng.dish.Dish;
 import com.wenfeng.dish.DishService;
 import com.wenfeng.reservation.Reservation;
 import com.wenfeng.reservation.ReservationRepository;
+import com.wenfeng.review.Review;
+import com.wenfeng.review.ReviewRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -12,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -28,10 +31,13 @@ public class PublicApiController {
 
     private final DishService dishService;
     private final ReservationRepository reservationRepository;
+    private final ReviewRepository reviewRepository;
 
-    public PublicApiController(DishService dishService, ReservationRepository reservationRepository) {
+    public PublicApiController(DishService dishService, ReservationRepository reservationRepository,
+            ReviewRepository reviewRepository) {
         this.dishService = dishService;
         this.reservationRepository = reservationRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     /** 前台首页菜品列表 */
@@ -56,6 +62,15 @@ public class PublicApiController {
         return Map.of("id", saved.getId(), "status", saved.getStatus().name());
     }
 
+    /** 首页顾客评价（仅展示审核通过的） */
+    @GetMapping("/reviews")
+    public List<ReviewDto> reviews() {
+        return reviewRepository.findByStatusOrderByCreatedAtDesc("APPROVED").stream()
+                .limit(6)
+                .map(ReviewDto::from)
+                .toList();
+    }
+
     public record DishDto(Long id, String name, String nameEn, String description,
             BigDecimal price, String image, String category, String tag, boolean recommended) {
 
@@ -74,5 +89,13 @@ public class PublicApiController {
             @Min(value = 1, message = "人数至少 1 人") @Max(value = 50, message = "人数最多 50 人") int guests,
             String room,
             String note) {
+    }
+
+    public record ReviewDto(Long id, String nickname, int rating, String content, String createdAt) {
+
+        static ReviewDto from(Review r) {
+            return new ReviewDto(r.getId(), r.getNickname(), r.getRating(), r.getContent(),
+                    r.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        }
     }
 }

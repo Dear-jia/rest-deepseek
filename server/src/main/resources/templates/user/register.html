@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragments :: head('用户注册')"></head>
+<body>
+<div class="login-wrap">
+  <form class="login-card" th:action="@{/user/register}" method="post">
+    <h1>注册新用户</h1>
+    <p>注册即送 3 次抽奖机会（每天）</p>
+    <p class="err" th:if="${error}" th:text="${error}">错误</p>
+    <input type="text" name="username" placeholder="用户名（至少 3 个字符）" minlength="3" required>
+    <input type="password" name="password" placeholder="密码（至少 6 位）" minlength="6" required>
+    <input type="password" name="confirmPassword" placeholder="确认密码" minlength="6" required>
+    <input type="text" name="nickname" placeholder="昵称（选填）">
+    <input type="tel" name="phone" placeholder="手机号（选填）">
+    <button type="submit">注 册</button>
+    <p style="text-align:center;margin:14px 0 0;font-size:13px;">
+      已有账号？<a href="/user/login">去登录</a>
+    </p>
+  </form>
+</div>
+</body>
+</html>

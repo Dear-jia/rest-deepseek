@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragments :: head('评价管理')"></head>
+<body>
+<header th:replace="admin/fragments :: topbar('reviews')"></header>
+<main>
+  <div class="flash" th:if="${flash}" th:text="${flash}">提示</div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>用户评价</h2>
+      <span class="muted">通过后展示在首页顾客评价区</span>
+    </div>
+    <table>
+      <tr>
+        <th>ID</th><th>昵称</th><th>评分</th><th>内容</th><th>提交时间</th><th>状态</th><th>操作</th>
+      </tr>
+      <tr th:each="r : ${reviews}">
+        <td th:text="'#' + ${r.id}">-</td>
+        <td th:text="${r.nickname}">-</td>
+        <td th:text="${r.rating} + ' 星'">-</td>
+        <td style="max-width:380px;" th:text="${r.content}">-</td>
+        <td th:text="${#temporals.format(r.createdAt, 'MM-dd HH:mm')}">-</td>
+        <td>
+          <th:block th:switch="${r.status}">
+            <span class="badge badge-pending" th:case="PENDING">待审核</span>
+            <span class="badge badge-confirmed" th:case="APPROVED">已通过</span>
+            <span class="badge badge-cancelled" th:case="REJECTED">已驳回</span>
+          </th:block>
+        </td>
+        <td>
+          <form class="inline" method="post" th:if="${r.status == 'PENDING'}"
+                th:action="@{/admin/reviews/{id}/approve(id=${r.id})}">
+            <button class="btn btn-success btn-sm" type="submit">通过</button>
+          </form>
+          <form class="inline" method="post" th:if="${r.status == 'PENDING'}"
+                th:action="@{/admin/reviews/{id}/reject(id=${r.id})}">
+            <button class="btn btn-ghost btn-sm" type="submit">驳回</button>
+          </form>
+          <form class="inline" method="post" th:action="@{/admin/reviews/{id}/delete(id=${r.id})}"
+                onsubmit="return confirm('确定删除这条评价吗？');">
+            <button class="btn btn-danger btn-sm" type="submit">删除</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(reviews)}">
+        <td colspan="7" class="muted">暂无用户评价。</td>
+      </tr>
+    </table>
+  </div>
+</main>
+</body>
+</html>

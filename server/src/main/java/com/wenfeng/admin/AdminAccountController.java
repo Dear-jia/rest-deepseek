@@ -25,7 +25,8 @@ public class AdminAccountController {
     }
 
     @GetMapping
-    public String accountPage() {
+    public String accountPage(@RequestParam(required = false) String forced, Model model) {
+        model.addAttribute("forced", forced != null);
         return "admin/account";
     }
 
@@ -40,8 +41,8 @@ public class AdminAccountController {
             model.addAttribute("error", "原密码不正确");
             return "admin/account";
         }
-        if (newPassword == null || newPassword.length() < 6) {
-            model.addAttribute("error", "新密码至少需要 6 位");
+        if (newPassword == null || newPassword.length() < 8) {
+            model.addAttribute("error", "新密码至少需要 8 位");
             return "admin/account";
         }
         if (!newPassword.equals(confirmPassword)) {
@@ -54,6 +55,7 @@ public class AdminAccountController {
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
+        user.setMustChangePassword(false);
         userRepository.save(user);
         redirect.addFlashAttribute("flash", "密码已更新，下次登录请使用新密码");
         return "redirect:/admin/account";

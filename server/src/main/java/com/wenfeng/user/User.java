@@ -24,6 +24,8 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    private boolean mustChangePassword = false;
+
     public Long getId() {
         return id;
     }
@@ -54,5 +56,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isMustChangePassword() {
+        return mustChangePassword;
+    }
+
+    public void setMustChangePassword(boolean mustChangePassword) {
+        this.mustChangePassword = mustChangePassword;
     }
 }

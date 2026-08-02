@@ -6,6 +6,8 @@ import com.wenfeng.reservation.ReservationStatus;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Controller;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +25,14 @@ public class AdminController {
 
     @GetMapping("/admin/login")
     public String login(@RequestParam(required = false) String error,
-            @RequestParam(required = false) String logout, Model model) {
+            @RequestParam(required = false) String logout, Model model, Authentication authentication) {
+        // 已登录管理员访问登录页时，直接进入后台
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            return isAdmin ? "redirect:/admin" : "redirect:/user";
+        }
         model.addAttribute("error", error != null);
         model.addAttribute("logout", logout != null);
         return "admin/login";

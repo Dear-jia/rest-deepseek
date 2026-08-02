@@ -30,10 +30,12 @@
           <li><a href="#menu">菜单</a></li>
           <li><a href="#gallery">环境</a></li>
           <li><a href="#reviews">评价</a></li>
+          <li class="nav-user-item" hidden><a href="/user">用户中心</a></li>
           <li class="nav-login-item" hidden><a href="/admin/login">管理登录</a></li>
         </ul>
       </nav>
 
+      <a class="header-login" id="header-user-link" href="/user" hidden>用户中心</a>
       <a class="header-login" id="header-login" href="/admin/login" hidden>管理登录</a>
       <a class="btn btn--accent header-cta" href="#reserve">立即预订</a>
 
@@ -478,7 +480,7 @@
           <h2 class="section-title">顾客怎么说</h2>
         </div>
 
-        <div class="review-grid">
+        <div class="review-grid" id="review-grid">
           <blockquote class="review-card reveal">
             <div class="stars" aria-label="5 星好评">★★★★★</div>
             <p class="review-text">吃了五年的家常味道，宫保鸡丁百吃不厌，带孩子来也放心。</p>
@@ -608,6 +610,7 @@
           <li><a href="#signature">招牌菜</a></li>
           <li><a href="#menu">今日菜单</a></li>
           <li><a href="#reserve">在线预订</a></li>
+          <li><a href="/user" id="footer-user-link" hidden>用户中心</a></li>
         </ul>
       </div>
       <div class="footer-col">

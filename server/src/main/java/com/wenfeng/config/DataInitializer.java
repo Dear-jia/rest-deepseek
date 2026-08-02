@@ -6,6 +6,9 @@ import com.wenfeng.dish.DishRepository;
 import com.wenfeng.user.User;
 import com.wenfeng.user.UserRepository;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
+
     private final UserRepository userRepository;
     private final DishRepository dishRepository;
     private final PasswordEncoder passwordEncoder;
@@ -21,8 +26,8 @@ public class DataInitializer implements CommandLineRunner {
     @Value("${app.admin.username:admin}")
     private String adminUsername;
 
-    @Value("${app.admin.password:admin123}")
-    private String adminPassword;
+    @Value("${app.admin.password:}")
+    private String configuredAdminPassword;
 
     public DataInitializer(UserRepository userRepository, DishRepository dishRepository,
             PasswordEncoder passwordEncoder) {
@@ -41,10 +46,30 @@ public class DataInitializer implements CommandLineRunner {
         if (userRepository.count() == 0) {
             User admin = new User();
             admin.setUsername(adminUsername);
-            admin.setPassword(passwordEncoder.encode(adminPassword));
+            boolean explicitlyConfigured = configuredAdminPassword != null
+                    && !configuredAdminPassword.isBlank()
+                    && !"admin123".equals(configuredAdminPassword);
+            String password = explicitlyConfigured ? configuredAdminPassword : randomPassword();
+            if (!explicitlyConfigured) {
+                log.warn("════════════════════════════════════════════════════════════");
+                log.warn("未配置 ADMIN_PASSWORD，已生成随机管理员初始密码（请立即登录修改）：{}", password);
+                log.warn("════════════════════════════════════════════════════════════");
+            }
+            admin.setPassword(passwordEncoder.encode(password));
             admin.setRole("ROLE_ADMIN");
+            admin.setMustChangePassword(!explicitlyConfigured);
             userRepository.save(admin);
         }
+    }
+
+    private String randomPassword() {
+        String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 12; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 
     private void initDishes() {

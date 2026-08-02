@@ -14,7 +14,3 @@ services:
     envVars:
       - key: PUBLIC_DIR
         value: /app/public
-      - key: ADMIN_USER
-        value: admin
-      - key: ADMIN_PASSWORD
-        value: admin123

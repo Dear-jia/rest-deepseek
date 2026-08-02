@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:fragment="userTopbar">
+  <style>
+    .userbar { display: flex; align-items: center; gap: 20px; background: #201812; color: #fff; padding: 0 28px; height: 60px; }
+    .userbar .ubrand { font-size: 17px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: .08em; }
+    .userbar .ubrand span { color: #d9a441; }
+    .userbar .ulinks { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+    .userbar .ulinks a { color: rgba(255,255,255,.8); text-decoration: none; font-size: 14px; }
+    .userbar .ulinks a:hover { color: #fff; }
+    .userbar form button { background: none; border: 0; color: rgba(255,255,255,.7); cursor: pointer; font-size: 14px; padding: 8px 10px; }
+    .userbar form button:hover { color: #fff; }
+  </style>
+  <div class="userbar">
+    <a class="ubrand" href="/user"><span>文峰小馆</span> · 用户中心</a>
+    <div class="ulinks">
+      <a href="/">返回首页</a>
+      <form class="inline" method="post" th:action="@{/user/logout}">
+        <button type="submit">退出登录</button>
+      </form>
+    </div>
+  </div>
+</header>
+</html>

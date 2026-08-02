@@ -3,7 +3,7 @@
 <head th:fragment="head(title)">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="${title} + ' · 文峰小馆后台'">后台管理</title>
+  <title th:text="${title} + ' · 文峰小馆'">文峰小馆</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif; background: #f4efe6; color: #241c14; }
@@ -86,6 +86,8 @@
     <a th:classappend="${active == 'dashboard'} ? 'on' : ''" href="/admin">数据看板</a>
     <a th:classappend="${active == 'dishes'} ? 'on' : ''" href="/admin/dishes">菜品管理</a>
     <a th:classappend="${active == 'reservations'} ? 'on' : ''" href="/admin/reservations">预订管理</a>
+    <a th:classappend="${active == 'users'} ? 'on' : ''" href="/admin/users">用户管理</a>
+    <a th:classappend="${active == 'reviews'} ? 'on' : ''" href="/admin/reviews">评价管理</a>
     <a th:classappend="${active == 'account'} ? 'on' : ''" href="/admin/account">修改密码</a>
     <form class="inline" method="post" th:action="@{/admin/logout}">
       <button type="submit">退出登录</button>
