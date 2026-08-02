@@ -60,6 +60,13 @@ public class DataInitializer implements CommandLineRunner {
             admin.setMustChangePassword(!explicitlyConfigured);
             userRepository.save(admin);
         }
+        // 兼容老库：若管理员密码仍是公开默认值 admin123，强制其下次登录修改
+        userRepository.findByUsername(adminUsername).ifPresent(admin -> {
+            if (passwordEncoder.matches("admin123", admin.getPassword())) {
+                admin.setMustChangePassword(true);
+                userRepository.save(admin);
+            }
+        });
     }
 
     private String randomPassword() {

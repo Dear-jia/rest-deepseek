@@ -24,7 +24,9 @@ public class User {
     @Column(nullable = false)
     private String role;
 
-    private boolean mustChangePassword = false;
+    // 使用包装类型 + 可空列：老库已有数据时列值为 NULL，包装类型可安全处理
+    @Column(nullable = true)
+    private Boolean mustChangePassword = false;
 
     public Long getId() {
         return id;
@@ -59,7 +61,7 @@ public class User {
     }
 
     public boolean isMustChangePassword() {
-        return mustChangePassword;
+        return Boolean.TRUE.equals(mustChangePassword);
     }
 
     public void setMustChangePassword(boolean mustChangePassword) {
