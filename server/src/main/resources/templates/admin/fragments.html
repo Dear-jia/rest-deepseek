@@ -64,6 +64,20 @@
     .muted { color: #8a7b66; font-size: 13px; }
     @media (max-width: 760px) { .cards { grid-template-columns: 1fr 1fr; } .form-grid { grid-template-columns: 1fr; } }
   </style>
+  <script>
+    // 防止重复提交：点击提交按钮后立即禁用，避免双击/连点导致 CSRF 令牌过期报 403
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll("form").forEach(function (form) {
+        form.addEventListener("submit", function () {
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn && !btn.disabled) {
+            btn.disabled = true;
+            btn.textContent = btn.textContent.replace(/…+$/, "") + "…";
+          }
+        });
+      });
+    });
+  </script>
 </head>
 <body>
 <header class="topbar" th:fragment="topbar(active)">

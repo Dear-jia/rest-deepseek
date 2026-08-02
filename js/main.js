@@ -232,6 +232,7 @@
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
+    if (form.dataset.submitting === "1") return;
 
     const name = form.name;
     const phone = form.phone;
@@ -257,6 +258,14 @@
       return;
     }
 
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const btnLabel = submitBtn ? submitBtn.textContent : "";
+    form.dataset.submitting = "1";
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "提交中…";
+    }
+
     const payload = {
       name: name.value.trim(),
       phone: phone.value.trim(),
@@ -278,6 +287,11 @@
       form.reset();
     } catch (e) {
       showToast("当前为演示环境，预订未提交到服务器（部署 Java 后端后即可在线预订）。");
+    }
+    form.dataset.submitting = "";
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = btnLabel;
     }
   });
 
