@@ -106,6 +106,9 @@
         if (adminLink) adminLink.hidden = false;
         const headerLogin = document.getElementById("header-login");
         if (headerLogin) headerLogin.hidden = false;
+        document.querySelectorAll(".nav-login-item").forEach(function (item) {
+          item.hidden = false;
+        });
       }
     } catch (e) {
       // 纯静态环境（如 GitHub Pages）下保持内置菜单

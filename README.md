@@ -124,6 +124,12 @@ java -jar target/wenfeng-kitchen-0.1.0.jar
 .\server\run-dev.ps1
 ```
 
+如果 8080 端口被其他程序占用（比如同时运行着别的 Java 服务），换一个端口：
+
+```powershell
+.\server\run-dev.ps1 -Port 8088
+```
+
 或手动启动：
 
 ```powershell
