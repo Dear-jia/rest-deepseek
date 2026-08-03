@@ -17,7 +17,8 @@
       <tr th:each="d : ${dishes}">
         <td th:text="${d.sortOrder}">0</td>
         <td>
-          <img class="thumb" th:if="${d.image != null}" th:src="${d.image}" alt="">
+          <!-- 用 @{} 解析为上下文绝对路径，避免 /admin/ 路径下相对路径 404 -->
+          <img class="thumb" th:if="${d.image != null}" th:src="@{${d.image}}" alt="">
           <span th:if="${d.image == null}" class="muted">无图</span>
         </td>
         <td>

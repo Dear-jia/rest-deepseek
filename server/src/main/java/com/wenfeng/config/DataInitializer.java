@@ -45,6 +45,18 @@ public class DataInitializer implements CommandLineRunner {
         initAdmin();
         initDishes();
         initStaff();
+        normalizeDishImages();
+    }
+
+    /** 兼容老数据：把相对图片路径统一为以 / 开头的上下文绝对路径 */
+    private void normalizeDishImages() {
+        dishRepository.findAll().forEach(d -> {
+            String image = d.getImage();
+            if (image != null && !image.startsWith("/") && !image.startsWith("http")) {
+                d.setImage("/" + image);
+                dishRepository.save(d);
+            }
+        });
     }
 
     private void initStaff() {
@@ -167,7 +179,7 @@ public class DataInitializer implements CommandLineRunner {
         d.setNameEn(nameEn);
         d.setDescription(description);
         d.setPrice(new BigDecimal(price));
-        d.setImage(image);
+        d.setImage(image == null ? null : (image.startsWith("/") ? image : "/" + image));
         d.setCategory(category);
         d.setTag(tag);
         d.setRecommended(recommended);
