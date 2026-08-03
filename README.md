@@ -213,11 +213,11 @@ java -jar target/wenfeng-kitchen-0.1.0.jar   # 运行打包产物
 
 在 `index.html` 中搜索以下占位信息并替换：
 
-- 门店地址：`上海市徐汇区衡山路 88 号`
-- 预订电话：`021-8888-6666`
+- 门店地址：`湖南省长沙市岳麓区`
+- 预订电话：`0731-8888-6666`
 - 营业时间：`10:30 – 22:00` 等
-- 邮箱：`hello@shanyun.example.com`
-- 店名：`山云小馆` / `SHAN YUN KITCHEN`（出现在导航、Hero、页脚）
+- 邮箱：`hello@sakura-dream.example.com`
+- 店名：`樱梦女仆咖啡厅` / `SAKURA DREAM MAID CAFÉ`（出现在导航、Hero、页脚）
 
 ### 替换菜品与图片
 

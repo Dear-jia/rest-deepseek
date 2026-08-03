@@ -1,5 +1,5 @@
 # ============================================================
-# 文峰小馆 · 本地开发启动脚本
+# 樱梦女仆咖啡厅 · 本地开发启动脚本
 # 用法：.\server\run-dev.ps1              （默认端口 8080）
 #        .\server\run-dev.ps1 -Port 8088  （8080 被占用时换端口）
 # 可选：先设置 DATABASE_URL / DB_DRIVER / DB_USERNAME / DB_PASSWORD 以连接 PostgreSQL
