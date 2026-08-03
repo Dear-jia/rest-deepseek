@@ -59,6 +59,8 @@ project-rest/
 - **我的优惠券**：查看抽中的优惠券
 - **发表评价**：提交后由管理员审核，通过后展示在首页「顾客评价」区
 
+> 用户端与管理端使用**独立的登录态 Cookie**（USER_AUTH / ADMIN_AUTH），可以在同一个浏览器里同时登录用户中心和管理后台，互不冲突；退出任一端不影响另一端。
+
 ## 安全说明
 
 - **管理员初始密码**：未配置 `ADMIN_PASSWORD` 时，首次启动自动生成 12 位随机密码并打印到日志（Render 的 Logs 里搜索「初始密码」），且强制首次登录修改；配置了强密码环境变量则跳过强制修改
@@ -66,7 +68,8 @@ project-rest/
 - **H2 控制台默认关闭**（可执行任意 SQL 的高危入口）；本地调试需要时设置 `H2_CONSOLE=true`
 - **SQL 注入防护**：全项目使用 Spring Data JPA 参数化查询，无原生 SQL 拼接；开发新功能请同样使用参数化查询（派生方法或 `@Query` 占位符），不要拼接 SQL
 - **安全响应头**：CSP、X-Frame-Options、Referrer-Policy、Cache-Control 已开启
-- 密码使用 BCrypt 加密存储，登录会话使用 HttpOnly Cookie
+- 密码使用 BCrypt 加密存储，登录态使用 **HMAC 签名 + HttpOnly Cookie**
+- 登录态 Cookie 使用 `AUTH_SECRET` 签名，**生产环境务必设置** `AUTH_SECRET` 为强随机值（本地默认值仅用于开发）
 
 ### 长期存储数据（PostgreSQL）
 

@@ -3,12 +3,14 @@ package com.wenfeng.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 @Configuration
 public class SecurityConfig {
@@ -24,6 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .securityMatcher("/admin/**")
+            .securityContext(ctx -> ctx.securityContextRepository(adminRepo))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/admin/login").permitAll()
                 .anyRequest().hasRole("ADMIN"))
@@ -52,6 +55,7 @@ public class SecurityConfig {
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .securityMatcher("/user/**")
+            .securityContext(ctx -> ctx.securityContextRepository(userRepo))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/user/login", "/user/register").permitAll()
                 .anyRequest().hasRole("USER"))
@@ -98,12 +102,17 @@ public class SecurityConfig {
     private final RateLimitedAuthenticationFailureHandler failureHandler;
     private final MustChangePasswordFilter mustChangePasswordFilter;
     private final LoginLockFilter loginLockFilter;
+    private final SecurityContextRepository adminRepo;
+    private final SecurityContextRepository userRepo;
 
     public SecurityConfig(RateLimitedAuthenticationFailureHandler failureHandler,
-            MustChangePasswordFilter mustChangePasswordFilter, LoginLockFilter loginLockFilter) {
+            MustChangePasswordFilter mustChangePasswordFilter, LoginLockFilter loginLockFilter,
+            @Value("${app.auth.secret}") String secret, JpaUserDetailsService userDetailsService) {
         this.failureHandler = failureHandler;
         this.mustChangePasswordFilter = mustChangePasswordFilter;
         this.loginLockFilter = loginLockFilter;
+        this.adminRepo = new CookieSecurityContextRepository("ADMIN_AUTH", "/admin", "ROLE_ADMIN", secret, userDetailsService);
+        this.userRepo = new CookieSecurityContextRepository("USER_AUTH", "/user", "ROLE_USER", secret, userDetailsService);
     }
 
     // 两处链注册锁定过滤器（在认证前拦截）
