@@ -646,6 +646,16 @@ button {
   box-shadow: 0 8px 18px rgba(231, 80, 143, .2);
 }
 
+.staff-photo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 8px 18px rgba(231, 80, 143, .2);
+}
+
 .staff-card h3 {
   font-family: var(--font-serif);
   font-size: 21px;

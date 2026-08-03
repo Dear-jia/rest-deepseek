@@ -6,6 +6,8 @@ import com.wenfeng.reservation.Reservation;
 import com.wenfeng.reservation.ReservationRepository;
 import com.wenfeng.review.Review;
 import com.wenfeng.review.ReviewRepository;
+import com.wenfeng.staff.Staff;
+import com.wenfeng.staff.StaffRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -32,12 +34,14 @@ public class PublicApiController {
     private final DishService dishService;
     private final ReservationRepository reservationRepository;
     private final ReviewRepository reviewRepository;
+    private final StaffRepository staffRepository;
 
     public PublicApiController(DishService dishService, ReservationRepository reservationRepository,
-            ReviewRepository reviewRepository) {
+            ReviewRepository reviewRepository, StaffRepository staffRepository) {
         this.dishService = dishService;
         this.reservationRepository = reservationRepository;
         this.reviewRepository = reviewRepository;
+        this.staffRepository = staffRepository;
     }
 
     /** 前台首页菜品列表 */
@@ -71,6 +75,14 @@ public class PublicApiController {
                 .toList();
     }
 
+    /** 首页女仆与主厨（仅展示上架的） */
+    @GetMapping("/staff")
+    public List<StaffDto> staff() {
+        return staffRepository.findByEnabledTrueOrderBySortOrderAsc().stream()
+                .map(StaffDto::from)
+                .toList();
+    }
+
     public record DishDto(Long id, String name, String nameEn, String description,
             BigDecimal price, String image, String category, String tag, boolean recommended) {
 
@@ -96,6 +108,13 @@ public class PublicApiController {
         static ReviewDto from(Review r) {
             return new ReviewDto(r.getId(), r.getNickname(), r.getRating(), r.getContent(),
                     r.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        }
+    }
+
+    public record StaffDto(Long id, String name, String role, String description, String image) {
+
+        static StaffDto from(Staff s) {
+            return new StaffDto(s.getId(), s.getName(), s.getRole(), s.getDescription(), s.getImage());
         }
     }
 }

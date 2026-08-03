@@ -3,6 +3,8 @@ package com.wenfeng.config;
 import com.wenfeng.dish.Dish;
 import com.wenfeng.dish.DishCategory;
 import com.wenfeng.dish.DishRepository;
+import com.wenfeng.staff.Staff;
+import com.wenfeng.staff.StaffRepository;
 import com.wenfeng.user.User;
 import com.wenfeng.user.UserRepository;
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final DishRepository dishRepository;
+    private final StaffRepository staffRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${app.admin.username:admin}")
@@ -30,9 +33,10 @@ public class DataInitializer implements CommandLineRunner {
     private String configuredAdminPassword;
 
     public DataInitializer(UserRepository userRepository, DishRepository dishRepository,
-            PasswordEncoder passwordEncoder) {
+            StaffRepository staffRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.dishRepository = dishRepository;
+        this.staffRepository = staffRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -40,6 +44,28 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         initAdmin();
         initDishes();
+        initStaff();
+    }
+
+    private void initStaff() {
+        if (staffRepository.count() > 0) {
+            return;
+        }
+        staffRepository.save(staff("小樱", "女仆长", "「欢迎回来，主人！今天想吃点什么？」笑容满分，最擅长蛋包饭上的爱心画。", 1));
+        staffRepository.save(staff("露露", "甜点女仆", "奶油与草莓是她的魔法，松饼上的每一层都藏着小心思。", 2));
+        staffRepository.save(staff("藤原健", "甜品主厨", "从芝士蛋糕到布朗尼，十几年甜点生涯只为一勺完美的绵密。", 3));
+        staffRepository.save(staff("阿枫", "咖啡师", "拿铁拉花大师，杯中的小猫爪与爱心都是她的签名。", 4));
+        staffRepository.save(staff("桃子", "女仆", "元气担当，会记得每位主人的口味偏好和生日。", 5));
+        staffRepository.save(staff("星野", "侍酒·饮品师", "樱花苏打与蜜桃气泡水的调色师，颜值与味道都要在线。", 6));
+    }
+
+    private Staff staff(String name, String role, String description, int sortOrder) {
+        Staff s = new Staff();
+        s.setName(name);
+        s.setRole(role);
+        s.setDescription(description);
+        s.setSortOrder(sortOrder);
+        return s;
     }
 
     private void initAdmin() {

@@ -26,8 +26,11 @@ COPY js /app/public/js
 COPY assets /app/public/assets
 
 ENV PUBLIC_DIR=/app/public
+ENV UPLOAD_DIR=/app/uploads
 ENV TZ=Asia/Shanghai
 
+RUN mkdir -p /app/uploads
+VOLUME ["/app/uploads", "/app/data"]
 EXPOSE 8080
 # 免费实例内存为 512MB，JVM 堆上限设为 30%，避免 OOM 被杀
 CMD ["sh", "-c", "java -Duser.timezone=Asia/Shanghai -XX:MaxRAMPercentage=30 -jar /app/app.jar"]

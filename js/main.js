@@ -151,6 +151,35 @@
     }
   }
 
+  /* ---------- 女仆与主厨（来自后端，可上传照片；接口不可用时保留内置） ---------- */
+  const STAFF_AVATAR_COLORS = ["#ffd1e3", "#e8e2ff", "#ffe9c9", "#d3f3e8", "#ffe1f2", "#dbeafe"];
+
+  async function hydrateStaff() {
+    try {
+      const res = await fetch("/api/staff", { headers: { Accept: "application/json" } });
+      if (!res.ok) throw new Error("api unavailable");
+      const data = await res.json();
+      const grid = document.getElementById("staff-grid");
+      if (!grid || !Array.isArray(data) || data.length === 0) return;
+      grid.innerHTML = data.map(function (s, i) {
+        const photo = s.image
+          ? '<img class="staff-photo" src="' + esc(s.image) + '" alt="' + esc(s.name) + '" loading="lazy">'
+          : '<div class="staff-avatar" style="background:' + STAFF_AVATAR_COLORS[i % STAFF_AVATAR_COLORS.length] + ';">' +
+              esc((s.name || "樱").charAt(0)) + "</div>";
+        return (
+          '<article class="staff-card reveal in">' +
+            photo +
+            "<h3>" + esc(s.name) + "</h3>" +
+            '<p class="staff-role">' + esc(s.role || "") + "</p>" +
+            '<p class="staff-desc">' + esc(s.description || "") + "</p>" +
+          "</article>"
+        );
+      }).join("");
+    } catch (e) {
+      // 保留内置女仆卡片
+    }
+  }
+
   /* ---------- 顶部导航：滚动后切换样式 ---------- */
   function onScrollHeader() {
     header.classList.toggle("scrolled", window.scrollY > 40);
@@ -347,4 +376,5 @@
   /* ---------- 加载菜单 ---------- */
   hydrateMenu();
   hydrateReviews();
+  hydrateStaff();
 })();

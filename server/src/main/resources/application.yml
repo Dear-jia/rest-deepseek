@@ -23,14 +23,20 @@ spring:
       path: /h2-console
   web:
     resources:
-      # 前台静态页面默认从项目根目录读取（本地运行），部署时用 PUBLIC_DIR 指向
-      static-locations: classpath:/static/,file:${app.public-dir}/
+      # 前台静态页面默认从项目根目录读取（本地运行），部署时用 PUBLIC_DIR 指向；uploads 为上传目录
+      static-locations: classpath:/static/,file:${app.public-dir}/,file:${app.upload-dir}/
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
   thymeleaf:
     cache: false
   jackson:
     time-zone: Asia/Shanghai
 
 app:
+  # 女仆照片等上传文件的存放目录（本地为 server/uploads，Docker 用 /app/uploads）
+  upload-dir: ${UPLOAD_DIR:./uploads}
   auth:
     # 登录态 Cookie 签名密钥；生产环境务必通过 AUTH_SECRET 环境变量设置强随机值
     secret: ${AUTH_SECRET:dev-only-secret-please-change-2026-wenfeng}

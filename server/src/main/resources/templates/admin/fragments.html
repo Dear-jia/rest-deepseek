@@ -6,10 +6,10 @@
   <title th:text="${title} + ' · 樱梦女仆咖啡厅'">樱梦女仆咖啡厅</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif; background: #f4efe6; color: #241c14; }
-    .topbar { display: flex; align-items: center; gap: 24px; background: #201812; color: #fff; padding: 0 28px; height: 60px; }
+    body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif; background: #fdeef5; color: #55324a; }
+    .topbar { display: flex; align-items: center; gap: 24px; background: #40293a; color: #fff; padding: 0 28px; height: 60px; }
     .topbar .brand { font-size: 17px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: .08em; }
-    .topbar .brand span { color: #d9a441; }
+    .topbar .brand span { color: #ff9dc6; }
     .topbar nav { display: flex; gap: 4px; margin-left: auto; align-items: center; }
     .topbar nav a { color: rgba(255,255,255,.8); text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 14px; }
     .topbar nav a.on, .topbar nav a:hover { background: rgba(255,255,255,.12); color: #fff; }
@@ -17,51 +17,51 @@
     main { max-width: 1080px; margin: 28px auto; padding: 0 20px 48px; }
     .flash { background: #e8f4e3; border: 1px solid #bcddb0; color: #2f6b2f; padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; }
     .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 6px 16px rgba(36,28,20,.07); }
-    .card b { display: block; font-size: 30px; color: #b5431f; }
-    .card span { color: #8a7b66; font-size: 13px; }
-    .panel { background: #fff; border-radius: 12px; padding: 20px 22px; box-shadow: 0 6px 16px rgba(36,28,20,.07); margin-bottom: 20px; }
+    .card { background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 8px 20px rgba(231,80,143,.10); border: 1px solid #ffd7e8; }
+    .card b { display: block; font-size: 30px; color: #ff6fa5; }
+    .card span { color: #b89aa9; font-size: 13px; }
+    .panel { background: #fff; border-radius: 14px; padding: 20px 22px; box-shadow: 0 8px 20px rgba(231,80,143,.10); margin-bottom: 20px; border: 1px solid #ffd7e8; }
     .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .panel h2 { font-size: 18px; }
     .filter-tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-    .filter-tabs a { padding: 6px 16px; border-radius: 999px; background: #f3ecdd; color: #5b4a34; text-decoration: none; font-size: 13px; }
-    .filter-tabs a.on { background: #b5431f; color: #fff; }
+    .filter-tabs a { padding: 6px 16px; border-radius: 999px; background: #ffeaf4; color: #c2447e; text-decoration: none; font-size: 13px; }
+    .filter-tabs a.on { background: linear-gradient(135deg, #ff8fbf, #ff6fa5); color: #fff; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #efe6d6; vertical-align: middle; }
-    th { color: #8a7b66; font-weight: 600; font-size: 12px; letter-spacing: .06em; }
-    .thumb { width: 54px; height: 44px; object-fit: cover; border-radius: 8px; background: #f3ecdd; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #ffd7e8; vertical-align: middle; }
+    th { color: #b89aa9; font-weight: 600; font-size: 12px; letter-spacing: .06em; }
+    .thumb { width: 54px; height: 44px; object-fit: cover; border-radius: 10px; background: #ffeaf4; }
     .btn { display: inline-block; border: 0; border-radius: 8px; padding: 7px 14px; font-size: 13px; cursor: pointer; text-decoration: none; }
-    .btn-primary { background: #b5431f; color: #fff; }
-    .btn-primary:hover { background: #8f3317; }
-    .btn-ghost { background: #f3ecdd; color: #5b4a34; }
+    .btn-primary { background: linear-gradient(135deg, #ff8fbf, #ff6fa5); color: #fff; }
+    .btn-primary:hover { background: linear-gradient(135deg, #ff7ab3, #e7508f); }
+    .btn-ghost { background: #ffeaf4; color: #c2447e; }
     .btn-danger { background: #fbe9e6; color: #a13022; }
     .btn-success { background: #e8f4e3; color: #2f6b2f; }
     .btn-sm { padding: 5px 11px; font-size: 12px; }
     .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; }
-    .badge-pending { background: #fdf1d8; color: #8a6414; }
+    .badge-pending { background: #ffe9f4; color: #c2447e; }
     .badge-confirmed { background: #e8f4e3; color: #2f6b2f; }
-    .badge-cancelled { background: #f1ece2; color: #8a7b66; }
-    .badge-hot { background: #fbe9e6; color: #a13022; }
-    .badge-main { background: #e8eef4; color: #2b5370; }
-    .badge-drink { background: #eaf3e4; color: #3b6b2f; }
+    .badge-cancelled { background: #f3edf0; color: #9c8495; }
+    .badge-hot { background: #ffe1ef; color: #d1487f; }
+    .badge-main { background: #e8e2ff; color: #6b5cd6; }
+    .badge-drink { background: #e3f6ec; color: #2f7d5a; }
     form.inline { display: inline; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     .field label { font-size: 13px; font-weight: 600; }
-    .field input, .field select, .field textarea { padding: 10px 12px; border: 1px solid #ddd2bd; border-radius: 8px; font-size: 14px; font-family: inherit; }
-    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #b5431f; }
+    .field input, .field select, .field textarea { padding: 10px 12px; border: 1px solid #ffd7e8; border-radius: 10px; font-size: 14px; font-family: inherit; background: #fff; }
+    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #ff6fa5; box-shadow: 0 0 0 3px rgba(255,111,165,.14); }
     .field.full { grid-column: 1 / -1; }
     .actions { margin-top: 20px; display: flex; gap: 12px; }
     .hint { font-size: 12px; color: #8a7b66; }
-    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, #201812, #3a2b1d); }
-    .login-card { background: #fff; border-radius: 16px; padding: 40px; width: 360px; box-shadow: 0 20px 50px rgba(0,0,0,.3); }
-    .login-card h1 { font-size: 20px; margin-bottom: 6px; }
-    .login-card p { color: #8a7b66; font-size: 13px; margin-bottom: 22px; }
+    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, #40293a, #7a4a63); }
+    .login-card { background: #fff; border-radius: 18px; padding: 40px; width: 360px; box-shadow: 0 20px 50px rgba(64,41,58,.35); }
+    .login-card h1 { font-size: 20px; margin-bottom: 6px; color: #e7508f; }
+    .login-card p { color: #8a6b7d; font-size: 13px; margin-bottom: 22px; }
     .login-card .err { color: #a13022; font-size: 13px; margin-bottom: 12px; }
-    .login-card input { width: 100%; padding: 11px 12px; border: 1px solid #ddd2bd; border-radius: 8px; margin-bottom: 14px; font-size: 14px; }
-    .login-card button { width: 100%; padding: 12px; background: #b5431f; color: #fff; border: 0; border-radius: 8px; font-size: 15px; cursor: pointer; }
-    .login-card button:hover { background: #8f3317; }
-    .muted { color: #8a7b66; font-size: 13px; }
+    .login-card input { width: 100%; padding: 11px 12px; border: 1px solid #ffd7e8; border-radius: 10px; margin-bottom: 14px; font-size: 14px; }
+    .login-card button { width: 100%; padding: 12px; background: linear-gradient(135deg, #ff8fbf, #ff6fa5); color: #fff; border: 0; border-radius: 10px; font-size: 15px; cursor: pointer; }
+    .login-card button:hover { background: linear-gradient(135deg, #ff7ab3, #e7508f); }
+    .muted { color: #b89aa9; font-size: 13px; }
     .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: wfspin .7s linear infinite; vertical-align: -2px; margin-right: 7px; }
     @keyframes wfspin { to { transform: rotate(360deg); } }
     @media (max-width: 760px) { .cards { grid-template-columns: 1fr 1fr; } .form-grid { grid-template-columns: 1fr; } }
@@ -90,6 +90,7 @@
     <a th:classappend="${active == 'dishes'} ? 'on' : ''" href="/admin/dishes">菜品管理</a>
     <a th:classappend="${active == 'reservations'} ? 'on' : ''" href="/admin/reservations">预订管理</a>
     <a th:classappend="${active == 'users'} ? 'on' : ''" href="/admin/users">用户管理</a>
+    <a th:classappend="${active == 'staff'} ? 'on' : ''" href="/admin/staff">女仆管理</a>
     <a th:classappend="${active == 'reviews'} ? 'on' : ''" href="/admin/reviews">评价管理</a>
     <a th:classappend="${active == 'account'} ? 'on' : ''" href="/admin/account">修改密码</a>
     <form class="inline" method="post" th:action="@{/admin/logout}">
