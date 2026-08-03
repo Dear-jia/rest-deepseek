@@ -35,6 +35,14 @@ spring:
     time-zone: Asia/Shanghai
 
 app:
+  ai:
+    # AI 女仆小助手：接入任意 OpenAI 兼容的 /chat/completions 接口
+    # 免费推荐：智谱 GLM-4-Flash（bigmodel.cn）或 硅基流动（siliconflow.cn）
+    base-url: ${AI_BASE_URL:https://open.bigmodel.cn/api/paas/v4}
+    api-key: ${AI_API_KEY:}
+    model: ${AI_MODEL:glm-4-flash}
+    max-tokens: ${AI_MAX_TOKENS:500}
+    system-prompt: "你是「樱梦女仆咖啡厅」的 AI 女仆小助手「樱子」。用可爱亲切的语气、简短地解答餐厅相关问题：菜单、预约、营业时间、地址、优惠活动、抽奖会员等。不知道的事情就请客人到店或致电 0731-8888-6666 咨询。回答控制在 120 字以内。"
   # 女仆照片等上传文件的存放目录（本地为 server/uploads，Docker 用 /app/uploads）
   upload-dir: ${UPLOAD_DIR:./uploads}
   auth:

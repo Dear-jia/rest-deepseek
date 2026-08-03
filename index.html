@@ -417,6 +417,26 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <!-- AI 女仆小助手 -->
+  <button class="chat-toggle" id="chat-toggle" type="button" aria-label="打开 AI 女仆小助手" hidden>🤖</button>
+  <div class="chat-panel" id="chat-panel" hidden aria-hidden="true">
+    <div class="chat-head">
+      <span class="chat-avatar">🤖</span>
+      <div class="chat-head-text">
+        <strong>AI 女仆「樱子」</strong>
+        <small>免费 AI 服务中</small>
+      </div>
+      <button class="chat-close" id="chat-close" type="button" aria-label="关闭聊天">×</button>
+    </div>
+    <div class="chat-body" id="chat-body">
+      <div class="chat-msg chat-msg--ai">おかえりなさい，主人♡ 我是 AI 女仆「樱子」～<br>菜单、预约、营业时间、优惠活动都可以问我哦！</div>
+    </div>
+    <form class="chat-form" id="chat-form">
+      <input type="text" id="chat-input" placeholder="问问「樱子」吧…" maxlength="500" autocomplete="off">
+      <button type="submit">发送</button>
+    </form>
+  </div>
+
   <script src="js/main.js"></script>
 </body>
 </html>

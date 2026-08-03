@@ -110,6 +110,8 @@
         if (headerUser) headerUser.hidden = false;
         const footerUser = document.getElementById("footer-user-link");
         if (footerUser) footerUser.hidden = false;
+        const chatToggle = document.getElementById("chat-toggle");
+        if (chatToggle) chatToggle.hidden = false;
         document.querySelectorAll(".nav-login-item").forEach(function (item) {
           item.hidden = false;
         });
@@ -377,4 +379,70 @@
   hydrateMenu();
   hydrateReviews();
   hydrateStaff();
+
+  /* ---------- AI 女仆小助手 ---------- */
+  const chatToggle = document.getElementById("chat-toggle");
+  const chatPanel = document.getElementById("chat-panel");
+  const chatBody = document.getElementById("chat-body");
+  const chatForm = document.getElementById("chat-form");
+  const chatInput = document.getElementById("chat-input");
+  const chatClose = document.getElementById("chat-close");
+
+  function chatScroll() {
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function appendChatMsg(text, who) {
+    const div = document.createElement("div");
+    div.className = "chat-msg chat-msg--" + who;
+    div.textContent = text;
+    chatBody.appendChild(div);
+    chatScroll();
+  }
+
+  chatToggle.addEventListener("click", function () {
+    chatPanel.hidden = false;
+    chatPanel.setAttribute("aria-hidden", "false");
+    chatInput.focus();
+  });
+
+  chatClose.addEventListener("click", function () {
+    chatPanel.hidden = true;
+  });
+
+  chatForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text) return;
+    appendChatMsg(text, "user");
+    chatInput.value = "";
+
+    const typing = document.createElement("div");
+    typing.className = "chat-msg chat-msg--ai chat-typing";
+    typing.innerHTML = "<span></span><span></span><span></span>";
+    chatBody.appendChild(typing);
+    chatScroll();
+
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json().catch(function () { return {}; });
+      typing.remove();
+      if (!res.ok) {
+        const msg = data.message
+          || (res.status === 429 ? "问得太快啦，休息一下下再问哦～"
+              : res.status === 503 ? "AI 小助手正在准备中，请稍后再来～"
+              : "AI 服务暂时开小差了，请稍后再试～");
+        appendChatMsg(msg, "ai");
+      } else {
+        appendChatMsg(data.reply || "…", "ai");
+      }
+    } catch (err) {
+      typing.remove();
+      appendChatMsg("网络开小差了，请稍后再试～", "ai");
+    }
+  });
 })();

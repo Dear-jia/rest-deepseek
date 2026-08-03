@@ -71,6 +71,39 @@ project-rest/
 - 密码使用 BCrypt 加密存储，登录态使用 **HMAC 签名 + HttpOnly Cookie**
 - 登录态 Cookie 使用 `AUTH_SECRET` 签名，**生产环境务必设置** `AUTH_SECRET` 为强随机值（本地默认值仅用于开发）
 
+## AI 女仆小助手（网页端接入 AI）
+
+网页右下角有「AI 女仆小助手」聊天窗（后端代理调用大模型，密钥不暴露给浏览器）。
+
+### 免费接入步骤（推荐：智谱 GLM-4-Flash）
+
+1. 注册 [智谱开放平台](https://bigmodel.cn)（GLM-4-Flash 免费，注册即送额度）
+2. 在控制台创建 API Key
+3. 在 Render 的 Environment 添加变量并保存（会自动重新部署）：
+
+   ```text
+   AI_API_KEY  = 你的智谱 API Key
+   AI_BASE_URL = https://open.bigmodel.cn/api/paas/v4   （默认值，可省略）
+   AI_MODEL    = glm-4-flash                            （默认值，可省略）
+   ```
+
+4. 部署完成后刷新网页，聊天窗即可使用
+
+### 其他供应商（通用 OpenAI 兼容接口）
+
+只要接口是 `POST {base}/chat/completions` + Bearer 认证即可，例如：
+
+- 硅基流动：`AI_BASE_URL=https://api.siliconflow.cn/v1`，模型如 `Qwen/Qwen2.5-7B-Instruct`
+- Groq：`AI_BASE_URL=https://api.groq.com/openai/v1`，模型如 `llama-3.1-8b-instant`
+- OpenAI：`AI_BASE_URL=https://api.openai.com/v1`，模型如 `gpt-4o-mini`
+
+### 说明
+
+- 未配置 `AI_API_KEY` 时聊天窗会提示「正在准备中」，不报错
+- 每 IP 每分钟最多 10 次提问（防滥用）
+- 聊天内容会发送给第三方大模型服务，请勿在对话中提交敏感信息
+- 免费模型有各自的频率限制，正式运营可考虑接入付费模型提升体验
+
 ### 长期存储数据（PostgreSQL）
 
 默认使用本地 H2 文件数据库；需要数据长期保存（例如 Render 免费实例的临时磁盘会丢数据）时，接入 PostgreSQL：
