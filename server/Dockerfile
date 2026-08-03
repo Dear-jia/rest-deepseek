@@ -26,7 +26,8 @@ COPY js /app/public/js
 COPY assets /app/public/assets
 
 ENV PUBLIC_DIR=/app/public
+ENV TZ=Asia/Shanghai
 
 EXPOSE 8080
 # 免费实例内存为 512MB，JVM 堆上限设为 30%，避免 OOM 被杀
-CMD ["sh", "-c", "java -XX:MaxRAMPercentage=30 -jar /app/app.jar"]
+CMD ["sh", "-c", "java -Duser.timezone=Asia/Shanghai -XX:MaxRAMPercentage=30 -jar /app/app.jar"]
