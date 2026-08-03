@@ -80,45 +80,58 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initDishes() {
-        if (dishRepository.count() > 0) {
+        if (dishRepository.count() > 0 && !isOldMenu()) {
             return;
         }
-        dishRepository.save(dish("宫保鸡丁", "Kung Pao Chicken", "荔枝口的微辣回甜，花生酥脆，鸡丁滑嫩。",
-                48, "assets/img/dish-gongbaojiding.jpg", DishCategory.HOT, "招牌", true, 1));
-        dishRepository.save(dish("川味牛肉", "Szechuan Beef", "麻辣鲜香，牛肉嫩滑，大火锁住锅气。",
-                58, "assets/img/dish-sichuanniurou.jpg", DishCategory.HOT, "人气", true, 2));
-        dishRepository.save(dish("糖醋里脊", "Sweet & Sour Pork", "外酥里嫩，酸甜适口，大人小孩都爱。",
-                46, "assets/img/dish-tangculiji.jpg", DishCategory.HOT, "必点", true, 3));
-        dishRepository.save(dish("香橙鸡", "Orange Chicken", "果香清新，外皮酥脆。",
-                42, "assets/img/dish-xiangchengji.jpg", DishCategory.HOT, null, false, 4));
-        dishRepository.save(dish("西红柿炒蛋", "Tomato Egg Stir Fry", "家的味道，汤汁拌饭一绝。",
-                28, "assets/img/dish-xihongshichaoji.jpg", DishCategory.HOT, null, false, 5));
-        dishRepository.save(dish("干煸四季豆", "Stir-Fried Long Beans", "椒香干爽，素菜也下饭。",
-                26, "assets/img/dish-sidou.jpg", DishCategory.HOT, null, false, 6));
-        dishRepository.save(dish("虾仁炒河粉", "Shrimp Chow Fun", "镬气十足，虾仁弹牙。",
-                42, "assets/img/dish-xiarenhefen.jpg", DishCategory.MAIN, "锅气", true, 7));
-        dishRepository.save(dish("扬州炒饭", "Yangzhou Fried Rice", "粒粒分明，配料丰盛，一口满足。",
-                32, "assets/img/dish-chaofan.jpg", DishCategory.MAIN, "主食", true, 8));
-        dishRepository.save(dish("鲜虾云吞", "Shrimp Wontons", "现包现煮，汤清味鲜。",
-                36, "assets/img/dish-huntun.jpg", DishCategory.MAIN, "招牌", true, 9));
-        dishRepository.save(dish("主厨浓汤面", "Chef's Noodle Soup", "骨汤慢熬，配溏心蛋。",
-                38, "assets/img/dish-ramen.jpg", DishCategory.MAIN, null, false, 10));
-        dishRepository.save(dish("海鲜烩饭", "Seafood Rice", "鲜虾贝类，汤汁浓郁。",
-                58, "assets/img/dish-haixianfan.jpg", DishCategory.MAIN, null, false, 11));
-        dishRepository.save(dish("酸辣汤", "Hot & Sour Soup", "开胃醒神，料足汤浓。",
-                22, "assets/img/dish-suanlatang.jpg", DishCategory.MAIN, null, false, 12));
-        dishRepository.save(dish("蛋花汤", "Egg Drop Soup", "清爽解腻，现打蛋花。",
-                18, "assets/img/dish-danhuatang.jpg", DishCategory.MAIN, null, false, 13));
-        dishRepository.save(dish("桂花酒酿圆子", "Fermented Rice Ball Soup", "自制酒酿，桂花飘香。",
-                18, null, DishCategory.DRINK, null, false, 14));
-        dishRepository.save(dish("杨枝甘露", "Mango Pomelo Sago", "新鲜芒果，椰香浓郁。",
-                28, null, DishCategory.DRINK, null, false, 15));
-        dishRepository.save(dish("龙井茶（壶）", "Longjing Tea", "明前龙井，可续水。",
-                38, null, DishCategory.DRINK, null, false, 16));
-        dishRepository.save(dish("酸梅汤", "Sour Plum Drink", "古法熬制，冰镇更佳。",
-                12, null, DishCategory.DRINK, null, false, 17));
-        dishRepository.save(dish("鲜榨橙汁", "Fresh Orange Juice", "当季鲜果，现点现榨。",
-                20, null, DishCategory.DRINK, null, false, 18));
+        if (dishRepository.count() > 0) {
+            log.warn("检测到旧菜单（家常菜），正在替换为樱梦女仆咖啡厅菜单…");
+            dishRepository.deleteAll();
+        }
+        seedMenu();
+    }
+
+    private boolean isOldMenu() {
+        return dishRepository.findAll().stream()
+                .anyMatch(d -> "宫保鸡丁".equals(d.getName()));
+    }
+
+    private void seedMenu() {
+        dishRepository.save(dish("女仆特制蛋包饭", "Maid Omelette Rice", "松软蛋皮裹着香糯炒饭，番茄酱画出爱心～",
+                38, "assets/img/dish-omelette.jpg", DishCategory.HOT, "招牌", true, 1));
+        dishRepository.save(dish("草莓松饼", "Strawberry Pancakes", "现烤松饼叠草莓与奶油，甜度刚刚好。",
+                32, "assets/img/dish-pancake.jpg", DishCategory.HOT, "人气", true, 2));
+        dishRepository.save(dish("奶油培根意面", "Spaghetti Carbonara", "浓郁奶油裹着培根与蛋香，一口满足。",
+                36, "assets/img/dish-carbonara.jpg", DishCategory.HOT, null, true, 3));
+        dishRepository.save(dish("泰式绿咖喱饭", "Thai Green Curry", "椰香微辣的绿咖喱，配热米饭正合适。",
+                34, "assets/img/dish-curry.jpg", DishCategory.HOT, null, true, 4));
+        dishRepository.save(dish("纽约芝士蛋糕", "New York Cheesecake", "绵密芝士配酥脆饼底，下午茶首选。",
+                28, "assets/img/dish-cheesecake.jpg", DishCategory.HOT, "甜品", true, 5));
+        dishRepository.save(dish("巧克力布朗尼", "Chocolate Brownies", "外脆内软的布朗尼，树莓点缀酸甜解腻。",
+                26, "assets/img/dish-brownie.jpg", DishCategory.HOT, null, true, 6));
+        dishRepository.save(dish("番茄肉酱意面", "Spaghetti Bolognese", "慢炖番茄肉酱，经典好味道。",
+                30, "assets/img/dish-bolognese.jpg", DishCategory.MAIN, null, false, 7));
+        dishRepository.save(dish("姜饼华夫饼", "Gingerbread Waffles", "外酥里软的华夫，淋上枫糖浆。",
+                26, "assets/img/dish-waffle.jpg", DishCategory.MAIN, null, false, 8));
+        dishRepository.save(dish("树莓慕斯", "Raspberry Mousse", "轻盈树莓慕斯，酸甜绵密入口即化。",
+                22, "assets/img/dish-mousse.jpg", DishCategory.MAIN, null, false, 9));
+        dishRepository.save(dish("苹果蛋糕", "Apple Cake", "肉桂苹果的温暖香气，配红茶刚好。",
+                24, "assets/img/dish-apple-cake.jpg", DishCategory.MAIN, null, false, 10));
+        dishRepository.save(dish("草莓塔", "Strawberry Tart", "酥脆塔壳配新鲜草莓与卡仕达酱。",
+                26, "assets/img/dish-strawberry-tart.jpg", DishCategory.MAIN, null, false, 11));
+        dishRepository.save(dish("咖啡冰淇淋", "Espresso Ice Cream", "浓缩咖啡遇上香草冰淇淋，冷热交融。",
+                25, "assets/img/dish-icecream.jpg", DishCategory.MAIN, null, false, 12));
+        dishRepository.save(dish("女仆拿铁", "Maid Latte", "拉花里藏着爱心，杯边还有小猫爪。",
+                22, null, DishCategory.DRINK, "招牌", false, 13));
+        dishRepository.save(dish("抹茶拿铁", "Matcha Latte", "宇治抹茶与醇厚牛奶的温柔相遇。",
+                24, null, DishCategory.DRINK, null, false, 14));
+        dishRepository.save(dish("草莓奶昔", "Strawberry Milkshake", "新鲜草莓打成绵密奶昔，少女心满分。",
+                26, null, DishCategory.DRINK, null, false, 15));
+        dishRepository.save(dish("珍珠奶茶", "Bubble Tea", "Q 弹珍珠配经典奶茶，快乐加倍。",
+                18, null, DishCategory.DRINK, null, false, 16));
+        dishRepository.save(dish("蜜桃气泡水", "Peach Soda", "蜜桃香气在气泡里跳舞。",
+                20, null, DishCategory.DRINK, null, false, 17));
+        dishRepository.save(dish("樱花苏打", "Sakura Soda", "淡粉色樱花风味苏打，颜值担当。",
+                22, null, DishCategory.DRINK, null, false, 18));
     }
 
     private Dish dish(String name, String nameEn, String description, int price, String image,

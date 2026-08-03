@@ -15,24 +15,24 @@
 
   /* ---------- 内置菜单数据（后端不可用时的兜底） ---------- */
   const DEFAULT_DISHES = [
-    { name: "宫保鸡丁", nameEn: "Kung Pao Chicken", description: "荔枝口的微辣回甜，花生酥脆，鸡丁滑嫩。", price: 48, image: "assets/img/dish-gongbaojiding.jpg", category: "HOT", tag: "招牌", recommended: true },
-    { name: "川味牛肉", nameEn: "Szechuan Beef", description: "麻辣鲜香，牛肉嫩滑，大火锁住锅气。", price: 58, image: "assets/img/dish-sichuanniurou.jpg", category: "HOT", tag: "人气", recommended: true },
-    { name: "糖醋里脊", nameEn: "Sweet & Sour Pork", description: "外酥里嫩，酸甜适口，大人小孩都爱。", price: 46, image: "assets/img/dish-tangculiji.jpg", category: "HOT", tag: "必点", recommended: true },
-    { name: "香橙鸡", nameEn: "Orange Chicken", description: "果香清新，外皮酥脆。", price: 42, image: "assets/img/dish-xiangchengji.jpg", category: "HOT", tag: null, recommended: false },
-    { name: "西红柿炒蛋", nameEn: "Tomato Egg Stir Fry", description: "家的味道，汤汁拌饭一绝。", price: 28, image: "assets/img/dish-xihongshichaoji.jpg", category: "HOT", tag: null, recommended: false },
-    { name: "干煸四季豆", nameEn: "Stir-Fried Long Beans", description: "椒香干爽，素菜也下饭。", price: 26, image: "assets/img/dish-sidou.jpg", category: "HOT", tag: null, recommended: false },
-    { name: "虾仁炒河粉", nameEn: "Shrimp Chow Fun", description: "镬气十足，虾仁弹牙。", price: 42, image: "assets/img/dish-xiarenhefen.jpg", category: "MAIN", tag: "锅气", recommended: true },
-    { name: "扬州炒饭", nameEn: "Yangzhou Fried Rice", description: "粒粒分明，配料丰盛，一口满足。", price: 32, image: "assets/img/dish-chaofan.jpg", category: "MAIN", tag: "主食", recommended: true },
-    { name: "鲜虾云吞", nameEn: "Shrimp Wontons", description: "现包现煮，汤清味鲜。", price: 36, image: "assets/img/dish-huntun.jpg", category: "MAIN", tag: "招牌", recommended: true },
-    { name: "主厨浓汤面", nameEn: "Chef's Noodle Soup", description: "骨汤慢熬，配溏心蛋。", price: 38, image: "assets/img/dish-ramen.jpg", category: "MAIN", tag: null, recommended: false },
-    { name: "海鲜烩饭", nameEn: "Seafood Rice", description: "鲜虾贝类，汤汁浓郁。", price: 58, image: "assets/img/dish-haixianfan.jpg", category: "MAIN", tag: null, recommended: false },
-    { name: "酸辣汤", nameEn: "Hot & Sour Soup", description: "开胃醒神，料足汤浓。", price: 22, image: "assets/img/dish-suanlatang.jpg", category: "MAIN", tag: null, recommended: false },
-    { name: "蛋花汤", nameEn: "Egg Drop Soup", description: "清爽解腻，现打蛋花。", price: 18, image: "assets/img/dish-danhuatang.jpg", category: "MAIN", tag: null, recommended: false },
-    { name: "桂花酒酿圆子", nameEn: "Fermented Rice Ball Soup", description: "自制酒酿，桂花飘香。", price: 18, image: null, category: "DRINK", tag: null, recommended: false },
-    { name: "杨枝甘露", nameEn: "Mango Pomelo Sago", description: "新鲜芒果，椰香浓郁。", price: 28, image: null, category: "DRINK", tag: null, recommended: false },
-    { name: "龙井茶（壶）", nameEn: "Longjing Tea", description: "明前龙井，可续水。", price: 38, image: null, category: "DRINK", tag: null, recommended: false },
-    { name: "酸梅汤", nameEn: "Sour Plum Drink", description: "古法熬制，冰镇更佳。", price: 12, image: null, category: "DRINK", tag: null, recommended: false },
-    { name: "鲜榨橙汁", nameEn: "Fresh Orange Juice", description: "当季鲜果，现点现榨。", price: 20, image: null, category: "DRINK", tag: null, recommended: false }
+    { name: "女仆特制蛋包饭", nameEn: "Maid Omelette Rice", description: "松软蛋皮裹着香糯炒饭，番茄酱画出爱心～", price: 38, image: "assets/img/dish-omelette.jpg", category: "HOT", tag: "招牌", recommended: true },
+    { name: "草莓松饼", nameEn: "Strawberry Pancakes", description: "现烤松饼叠草莓与奶油，甜度刚刚好。", price: 32, image: "assets/img/dish-pancake.jpg", category: "HOT", tag: "人气", recommended: true },
+    { name: "奶油培根意面", nameEn: "Spaghetti Carbonara", description: "浓郁奶油裹着培根与蛋香，一口满足。", price: 36, image: "assets/img/dish-carbonara.jpg", category: "HOT", tag: null, recommended: true },
+    { name: "泰式绿咖喱饭", nameEn: "Thai Green Curry", description: "椰香微辣的绿咖喱，配热米饭正合适。", price: 34, image: "assets/img/dish-curry.jpg", category: "HOT", tag: null, recommended: true },
+    { name: "纽约芝士蛋糕", nameEn: "New York Cheesecake", description: "绵密芝士配酥脆饼底，下午茶首选。", price: 28, image: "assets/img/dish-cheesecake.jpg", category: "HOT", tag: "甜品", recommended: true },
+    { name: "巧克力布朗尼", nameEn: "Chocolate Brownies", description: "外脆内软的布朗尼，树莓点缀酸甜解腻。", price: 26, image: "assets/img/dish-brownie.jpg", category: "HOT", tag: null, recommended: true },
+    { name: "番茄肉酱意面", nameEn: "Spaghetti Bolognese", description: "慢炖番茄肉酱，经典好味道。", price: 30, image: "assets/img/dish-bolognese.jpg", category: "MAIN", tag: null, recommended: false },
+    { name: "姜饼华夫饼", nameEn: "Gingerbread Waffles", description: "外酥里软的华夫，淋上枫糖浆。", price: 26, image: "assets/img/dish-waffle.jpg", category: "MAIN", tag: null, recommended: false },
+    { name: "树莓慕斯", nameEn: "Raspberry Mousse", description: "轻盈树莓慕斯，酸甜绵密入口即化。", price: 22, image: "assets/img/dish-mousse.jpg", category: "MAIN", tag: null, recommended: false },
+    { name: "苹果蛋糕", nameEn: "Apple Cake", description: "肉桂苹果的温暖香气，配红茶刚好。", price: 24, image: "assets/img/dish-apple-cake.jpg", category: "MAIN", tag: null, recommended: false },
+    { name: "草莓塔", nameEn: "Strawberry Tart", description: "酥脆塔壳配新鲜草莓与卡仕达酱。", price: 26, image: "assets/img/dish-strawberry-tart.jpg", category: "MAIN", tag: null, recommended: false },
+    { name: "咖啡冰淇淋", nameEn: "Espresso Ice Cream", description: "浓缩咖啡遇上香草冰淇淋，冷热交融。", price: 25, image: "assets/img/dish-icecream.jpg", category: "MAIN", tag: null, recommended: false },
+    { name: "女仆拿铁", nameEn: "Maid Latte", description: "拉花里藏着爱心，杯边还有小猫爪。", price: 22, image: null, category: "DRINK", tag: "招牌", recommended: false },
+    { name: "抹茶拿铁", nameEn: "Matcha Latte", description: "宇治抹茶与醇厚牛奶的温柔相遇。", price: 24, image: null, category: "DRINK", tag: null, recommended: false },
+    { name: "草莓奶昔", nameEn: "Strawberry Milkshake", description: "新鲜草莓打成绵密奶昔，少女心满分。", price: 26, image: null, category: "DRINK", tag: null, recommended: false },
+    { name: "珍珠奶茶", nameEn: "Bubble Tea", description: "Q 弹珍珠配经典奶茶，快乐加倍。", price: 18, image: null, category: "DRINK", tag: null, recommended: false },
+    { name: "蜜桃气泡水", nameEn: "Peach Soda", description: "蜜桃香气在气泡里跳舞。", price: 20, image: null, category: "DRINK", tag: null, recommended: false },
+    { name: "樱花苏打", nameEn: "Sakura Soda", description: "淡粉色樱花风味苏打，颜值担当。", price: 22, image: null, category: "DRINK", tag: null, recommended: false }
   ];
 
   /* ---------- 菜单渲染 ---------- */

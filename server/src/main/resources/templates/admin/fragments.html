@@ -3,7 +3,7 @@
 <head th:fragment="head(title)">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="${title} + ' · 文峰小馆'">文峰小馆</title>
+  <title th:text="${title} + ' · 樱梦女仆咖啡厅'">樱梦女仆咖啡厅</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif; background: #f4efe6; color: #241c14; }
@@ -84,7 +84,7 @@
 </head>
 <body>
 <header class="topbar" th:fragment="topbar(active)">
-  <a class="brand" href="/admin"><span>文峰小馆</span> · 后台管理</a>
+  <a class="brand" href="/admin"><span>樱梦女仆咖啡厅</span> · 后台管理</a>
   <nav>
     <a th:classappend="${active == 'dashboard'} ? 'on' : ''" href="/admin">数据看板</a>
     <a th:classappend="${active == 'dishes'} ? 'on' : ''" href="/admin/dishes">菜品管理</a>

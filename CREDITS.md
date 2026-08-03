@@ -31,3 +31,22 @@ Pexels 素材遵循 [Pexels License](https://www.pexels.com/license/)，可免�
 | `dish-ramen.jpg` | Ramen Noodles with Boiled Egg |
 
 TheMealDB 图片版权归其原始作者所有，请仅用于演示，并在上线前替换。
+
+## 樱梦女仆咖啡厅菜单图（2026-08 更新）
+
+| 本地文件 | 菜名（TheMealDB） |
+| --- | --- |
+| `dish-omelette.jpg` | French Omelette |
+| `dish-pancake.jpg` | Pancakes |
+| `dish-carbonara.jpg` | Spaghetti alla Carbonara |
+| `dish-curry.jpg` | Thai Green Curry |
+| `dish-cheesecake.jpg` | New York cheesecake |
+| `dish-brownie.jpg` | Chocolate Raspberry Brownies |
+| `dish-bolognese.jpg` | Spaghetti Bolognese |
+| `dish-waffle.jpg` | Gingerbread Waffles |
+| `dish-mousse.jpg` | Raspberry mousse |
+| `dish-apple-cake.jpg` | Apple cake |
+| `dish-strawberry-tart.jpg` | Strawberry tart |
+| `dish-icecream.jpg` | CAFE LA LLAVE ESPRESSO ICE CREAM |
+
+以上同样来自 TheMealDB 公开数据，仅用于演示。旧菜单图片（`dish-gongbaojiding.jpg` 等）仍保留在 `assets/img/`，已不再被前台使用。
