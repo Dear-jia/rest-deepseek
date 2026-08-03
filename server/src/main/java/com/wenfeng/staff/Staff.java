@@ -1,6 +1,7 @@
 package com.wenfeng.staff;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,13 @@ public class Staff {
 
     /** 照片 URL（如 /uploads/staff-xxx.jpg），未上传则为 null */
     private String image;
+
+    /** 照片二进制（存入云数据库，持久化且不占服务器磁盘） */
+    @Lob
+    private byte[] imageData;
+
+    /** 照片 MIME 类型（如 image/jpeg） */
+    private String imageType;
 
     private int sortOrder;
 
@@ -68,6 +76,22 @@ public class Staff {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
     }
 
     public int getSortOrder() {

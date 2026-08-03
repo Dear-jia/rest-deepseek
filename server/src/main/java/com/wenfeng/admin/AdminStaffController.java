@@ -2,13 +2,9 @@ package com.wenfeng.admin;
 
 import com.wenfeng.staff.Staff;
 import com.wenfeng.staff.StaffRepository;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,11 +23,9 @@ public class AdminStaffController {
     private static final long MAX_SIZE = 5 * 1024 * 1024;
 
     private final StaffRepository staffRepository;
-    private final String uploadDir;
 
-    public AdminStaffController(StaffRepository staffRepository, @Value("${app.upload-dir}") String uploadDir) {
+    public AdminStaffController(StaffRepository staffRepository) {
         this.staffRepository = staffRepository;
-        this.uploadDir = uploadDir;
     }
 
     @GetMapping
@@ -62,12 +56,7 @@ public class AdminStaffController {
             RedirectAttributes redirect) {
         Staff staff = new Staff();
         fill(staff, name, role, description, sortOrder, enabled);
-        try {
-            staff.setImage(saveImage(image));
-        } catch (IllegalArgumentException e) {
-            redirect.addFlashAttribute("error", e.getMessage());
-            return "redirect:/admin/staff";
-        }
+        applyImage(staff, image, redirect);
         staffRepository.save(staff);
         redirect.addFlashAttribute("flash", "已添加成员「" + staff.getName() + "」");
         return "redirect:/admin/staff";
@@ -81,16 +70,7 @@ public class AdminStaffController {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("成员不存在: " + id));
         fill(staff, name, role, description, sortOrder, enabled);
-        try {
-            String newImage = saveImage(image);
-            if (newImage != null) {
-                deleteUploadedFile(staff.getImage());
-                staff.setImage(newImage);
-            }
-        } catch (IllegalArgumentException e) {
-            redirect.addFlashAttribute("error", e.getMessage());
-            return "redirect:/admin/staff";
-        }
+        applyImage(staff, image, redirect);
         staffRepository.save(staff);
         redirect.addFlashAttribute("flash", "已更新成员「" + staff.getName() + "」");
         return "redirect:/admin/staff";
@@ -100,7 +80,6 @@ public class AdminStaffController {
     public String delete(@PathVariable Long id, RedirectAttributes redirect) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("成员不存在: " + id));
-        deleteUploadedFile(staff.getImage());
         staffRepository.deleteById(id);
         redirect.addFlashAttribute("flash", "已删除成员「" + staff.getName() + "」");
         return "redirect:/admin/staff";
@@ -124,39 +103,27 @@ public class AdminStaffController {
         staff.setEnabled(enabled);
     }
 
-    /** 返回保存后的 URL 路径；未选择文件时返回 null */
-    private String saveImage(MultipartFile file) {
+    /** 上传图片存入云数据库；未选择文件时保持原样 */
+    private void applyImage(Staff staff, MultipartFile file, RedirectAttributes redirect) {
         if (file == null || file.isEmpty()) {
-            return null;
+            return;
         }
         String original = file.getOriginalFilename();
         String ext = original == null ? "" : original.substring(original.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT);
         if (!ALLOWED_EXT.contains(ext)) {
-            throw new IllegalArgumentException("仅支持 jpg/png/webp/gif 图片");
+            redirect.addFlashAttribute("error", "仅支持 jpg/png/webp/gif 图片");
+            return;
         }
         if (file.getSize() > MAX_SIZE) {
-            throw new IllegalArgumentException("图片不能超过 5MB");
+            redirect.addFlashAttribute("error", "图片不能超过 5MB");
+            return;
         }
         try {
-            // 必须用绝对路径：transferTo 对相对路径会按 Servlet 临时目录解析
-            Path dir = Path.of(uploadDir).toAbsolutePath().normalize();
-            Files.createDirectories(dir);
-            String filename = "staff-" + UUID.randomUUID() + "." + ext;
-            file.transferTo(dir.resolve(filename));
-            return "/uploads/" + filename;
-        } catch (IOException e) {
-            throw new IllegalArgumentException("图片保存失败，请检查上传目录权限");
-        }
-    }
-
-    private void deleteUploadedFile(String image) {
-        if (image != null && image.startsWith("/uploads/")) {
-            try {
-                Files.deleteIfExists(Path.of(uploadDir).toAbsolutePath().normalize()
-                        .resolve(image.substring("/uploads/".length())));
-            } catch (IOException ignored) {
-                // 忽略删除失败
-            }
+            staff.setImageData(file.getBytes());
+            staff.setImageType("image/" + ("jpg".equals(ext) ? "jpeg" : ext));
+            staff.setImage("/uploads/staff-" + UUID.randomUUID() + "." + ext);
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "图片保存失败，请稍后重试");
         }
     }
 }

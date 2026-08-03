@@ -4,7 +4,6 @@
 # Java 构建产物与本地数据库
 server/target/
 server/data/
-server/uploads/
 *.mv.db
 *.trace.db
 

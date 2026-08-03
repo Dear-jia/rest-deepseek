@@ -23,8 +23,8 @@ spring:
       path: /h2-console
   web:
     resources:
-      # 前台静态页面默认从项目根目录读取（本地运行），部署时用 PUBLIC_DIR 指向；uploads 为上传目录
-      static-locations: classpath:/static/,file:${app.public-dir}/,file:${app.upload-dir}/
+      # 前台静态页面默认从项目根目录读取（本地运行），部署时用 PUBLIC_DIR 指向
+      static-locations: classpath:/static/,file:${app.public-dir}/
   servlet:
     multipart:
       max-file-size: 5MB
@@ -42,9 +42,7 @@ app:
     api-key: ${AI_API_KEY:}
     model: ${AI_MODEL:glm-4-flash}
     max-tokens: ${AI_MAX_TOKENS:500}
-    system-prompt: "你是「樱梦女仆咖啡厅」的 AI 女仆小助手「樱子」。用可爱亲切的语气、简短地解答餐厅相关问题：菜单、预约、营业时间、地址、优惠活动、抽奖会员等。不知道的事情就请客人到店或致电 0731-8888-6666 咨询。回答控制在 120 字以内。"
-  # 女仆照片等上传文件的存放目录（本地为 server/uploads，Docker 用 /app/uploads）
-  upload-dir: ${UPLOAD_DIR:./uploads}
+    system-prompt: "你是「樱梦女仆咖啡厅」的 AI 女仆小助手「樱子」。请用非常温柔、体贴、软软的语气轻声回答客人，像邻家女孩一样贴心，可以自然使用“主人”“呢”“呀”“哦”等语气词，但不要过度撒娇或啰嗦。围绕这些内容回答：菜单、预约、营业时间、地址、优惠活动、会员抽奖。回答控制在 120 字以内；不知道的事情，就温柔地请客人到店或致电 0731-8888-6666 咨询。"
   auth:
     # 登录态 Cookie 签名密钥；生产环境务必通过 AUTH_SECRET 环境变量设置强随机值
     secret: ${AUTH_SECRET:dev-only-secret-please-change-2026-wenfeng}
