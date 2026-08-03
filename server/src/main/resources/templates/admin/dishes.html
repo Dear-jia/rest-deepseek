@@ -45,9 +45,9 @@
             <button class="btn btn-sm" th:classappend="${d.enabled} ? 'btn-ghost' : 'btn-success'" type="submit"
                     th:text="${d.enabled} ? '下架' : '上架'">-</button>
           </form>
-          <form class="inline" method="post" th:action="@{/admin/dishes/{id}/delete(id=${d.id})}"
-                onsubmit="return confirm('确定删除「' + '${d.name}' + '」吗？');">
-            <button class="btn btn-danger btn-sm" type="submit">删除</button>
+          <form class="inline" method="post" th:action="@{/admin/dishes/{id}/delete(id=${d.id})}">
+            <button class="btn btn-danger btn-sm" type="submit"
+                    onclick="return confirm('确定删除「' + '${d.name}' + '」吗？');">删除</button>
           </form>
         </td>
       </tr>

@@ -36,9 +36,9 @@
                 th:action="@{/admin/reviews/{id}/reject(id=${r.id})}">
             <button class="btn btn-ghost btn-sm" type="submit">驳回</button>
           </form>
-          <form class="inline" method="post" th:action="@{/admin/reviews/{id}/delete(id=${r.id})}"
-                onsubmit="return confirm('确定删除这条评价吗？');">
-            <button class="btn btn-danger btn-sm" type="submit">删除</button>
+          <form class="inline" method="post" th:action="@{/admin/reviews/{id}/delete(id=${r.id})}">
+            <button class="btn btn-danger btn-sm" type="submit"
+                    onclick="return confirm('确定删除这条评价吗？');">删除</button>
           </form>
         </td>
       </tr>
