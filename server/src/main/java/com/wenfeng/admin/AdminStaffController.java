@@ -49,6 +49,12 @@ public class AdminStaffController {
         return "admin/staff-form";
     }
 
+    /** 误访问 /admin/staff/{id}（GET）时跳转到编辑页，避免 405 */
+    @GetMapping("/{id}")
+    public String redirectToEdit(@PathVariable Long id) {
+        return "redirect:/admin/staff/" + id + "/edit";
+    }
+
     @PostMapping
     public String create(@RequestParam String name, @RequestParam(required = false) String role,
             @RequestParam(required = false) String description, @RequestParam(required = false) MultipartFile image,
