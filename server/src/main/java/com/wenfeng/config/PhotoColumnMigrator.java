@@ -30,10 +30,19 @@ public class PhotoColumnMigrator implements ApplicationRunner {
             List<Map<String, Object>> rows = jdbcTemplate.queryForList(
                     "select data_type from information_schema.columns "
                             + "where table_name = 'staff' and column_name = 'image_data'");
-            if (!rows.isEmpty() && "oid".equalsIgnoreCase(String.valueOf(rows.get(0).get("data_type")))) {
-                jdbcTemplate.execute(
-                        "ALTER TABLE staff ALTER COLUMN image_data TYPE bytea USING NULL::bytea");
-                log.info("已迁移 staff.image_data 列类型：oid -> bytea");
+            if (!rows.isEmpty()) {
+                String type = String.valueOf(rows.get(0).get("data_type")).toUpperCase();
+                if ("OID".equals(type)) {
+                    // PostgreSQL：大对象 oid -> bytea
+                    jdbcTemplate.execute(
+                            "ALTER TABLE staff ALTER COLUMN image_data TYPE bytea USING NULL::bytea");
+                    log.info("已迁移 staff.image_data 列类型：oid -> bytea");
+                } else if (type.startsWith("BINARY VARYING") || type.equals("VARBINARY")) {
+                    // H2：长度受限的 VARBINARY(32600) -> 无长度限制的 BLOB
+                    jdbcTemplate.execute(
+                            "ALTER TABLE staff ALTER COLUMN image_data TYPE BLOB");
+                    log.info("已迁移 staff.image_data 列类型：{} -> BLOB", type);
+                }
             }
         } catch (Exception e) {
             log.warn("staff.image_data 列迁移跳过：{}", e.getMessage());
