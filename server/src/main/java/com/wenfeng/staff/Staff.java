@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "staff")
@@ -29,8 +31,9 @@ public class Staff {
 
     /** 照片二进制（存入云数据库，持久化且不占服务器磁盘） */
     @Lob
-    // PostgreSQL 用 bytea；H2 的 BYTEA 别名同样无长度限制
-    @Column(columnDefinition = "bytea")
+    // LONGVARBINARY：PostgreSQL 绑定为 bytea（直接写入成功）；
+    // H2 会建为长度受限的 VARBINARY，由启动迁移器自动改成 BLOB
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
     private byte[] imageData;
 
     /** 照片 MIME 类型（如 image/jpeg） */
